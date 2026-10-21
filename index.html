@@ -1,0 +1,2312 @@
+<!doctype html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assemblages poutre-poteau — Module interactif gamifié</title>
+
+<script>
+MathJax = { tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] } };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<style>
+:root{--bg:#f4f7ff;--panel:#fff;--card:#fff;--text:#15243b;--muted:#5b6b8c;--line:#d8e1f0;--accent:#2563eb;--accent-2:#7c3aed;--ok:#157347;--bad:#b4232a;--warn:#9a6700;--gold:#d97706;--purple:#8b5cf6;--shadow:0 12px 32px rgba(37,99,235,.09)}
+[data-theme="dark"]{--bg:#09101d;--panel:#0f1828;--card:#101a2d;--text:#eaf1ff;--muted:#a5b6d7;--line:#263552;--accent:#67a3ff;--accent-2:#b388ff;--ok:#59d58d;--bad:#ff8089;--warn:#ffcf5c;--gold:#ffb24d;--purple:#b388ff;--shadow:0 12px 32px rgba(0,0,0,.35)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Segoe UI,Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased}
+.skip-link{position:absolute;left:-999px;top:0;background:var(--accent);color:#fff;padding:.7rem 1rem;z-index:999}
+.skip-link:focus{left:10px;top:10px}
+.app{display:grid;grid-template-columns:300px minmax(0,1fr);min-height:100vh}
+.sidebar{position:sticky;top:0;height:100vh;overflow:auto;padding:1rem;background:var(--panel);border-right:1px solid var(--line)}
+.sidebar h1{font-size:1.15rem;margin:.4rem 0 1rem}
+.sidebar nav a{display:block;padding:.62rem .72rem;margin-bottom:.35rem;color:var(--text);text-decoration:none;border-radius:12px;border:1px solid transparent;transition:.15s}
+.sidebar nav a:hover,.sidebar nav a:focus{background:color-mix(in srgb,var(--accent) 12%,transparent);border-color:color-mix(in srgb,var(--accent) 35%,transparent);outline:none}
+.sidebar .sidebar-game{margin-top:.8rem;padding:.7rem;background:var(--bg);border-radius:12px;font-size:.82rem;display:grid;gap:.4rem}
+.sidebar .sidebar-game .sg-row{display:flex;justify-content:space-between;align-items:center}
+.content{min-width:0}
+.topbar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;padding:.8rem 1.1rem;background:color-mix(in srgb,var(--panel) 86%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topbar .title{margin-right:auto;min-width:220px}
+.topbar .title strong{display:block;line-height:1.15}
+.topbar small{color:var(--muted)}
+.hud-row{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;font-size:.82rem;font-weight:700}
+.hud-level{font-weight:900;color:var(--accent)}
+.hud-xp-bar{width:100px;height:9px;background:var(--line);border-radius:99px;overflow:hidden}
+.hud-xp-bar>div{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .5s;width:0}
+.hud-gem{color:#a855f7;font-weight:800}
+.hud-hint{color:var(--accent);font-weight:800}
+.hud-combo{color:#ea580c;font-weight:900;animation:pulseCombo .6s ease}
+@keyframes pulseCombo{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+.top-actions{display:flex;flex-wrap:wrap;gap:.5rem}
+.icon-btn{min-width:46px;min-height:44px}
+button{min-height:44px;padding:.65rem .95rem;border-radius:13px;border:0;background:var(--accent);color:#fff;font:inherit;font-weight:700;cursor:pointer;transition:.15s}
+button.secondary{background:transparent;color:var(--text);border:1px solid var(--line)}
+button.play{background:var(--ok);color:#fff}
+button:disabled{opacity:.55;cursor:not-allowed}
+input[type="number"],select{width:100%;min-height:44px;padding:.58rem .65rem;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--text);font:inherit}
+input[type="range"]{width:100%;min-height:44px;accent-color:var(--accent)}
+input:focus,select:focus,button:focus,a:focus{outline:3px solid color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:2px}
+label{display:block;margin:.6rem 0 .25rem;font-weight:600;font-size:.94rem}
+main{max-width:1250px;margin:0 auto;padding:1.2rem}
+section{margin-bottom:2.8rem;scroll-margin-top:110px}
+h2{margin:0 0 .8rem;font-size:1.7rem}
+h3{margin:0 0 .6rem;line-height:1.25}
+h4{margin:0 0 .4rem}
+p{margin:.45rem 0}
+ul,ol{margin:.4rem 0 .4rem 1.2rem;padding:0}
+.card,.box,.equation-card,.calculator,.quiz,.modal-card,.progress-wrap{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.card,.box,.equation-card,.calculator,.quiz{padding:1rem}
+.grid{display:grid;gap:1rem}
+.grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.stack{display:grid;gap:1rem}
+.muted{color:var(--muted)}
+.small{font-size:.92rem}
+.coursbox{border-left:8px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--card))}
+.defbox{border-left:8px solid #d97706;background:color-mix(in srgb,#d97706 10%,var(--card))}
+.exbox{border-left:8px solid #16a34a;background:color-mix(in srgb,#16a34a 10%,var(--card))}
+.solbox{border-left:8px solid var(--accent-2);background:color-mix(in srgb,var(--accent-2) 10%,var(--card))}
+.retbox{border-left:8px solid #dc2626;background:color-mix(in srgb,#dc2626 8%,var(--card))}
+.histbox{border-left:8px solid #0891b2;background:color-mix(in srgb,#0891b2 10%,var(--card))}
+.warnbox{border-left:8px solid var(--warn);background:color-mix(in srgb,var(--warn) 10%,var(--card))}
+.equation-card{border-top:6px solid var(--accent)}
+.formula{padding:.65rem .75rem;border-radius:14px;background:color-mix(in srgb,var(--panel) 65%,transparent);border:1px solid var(--line);overflow-x:auto}
+.result{margin-top:.75rem;padding:.75rem;border-radius:14px;background:color-mix(in srgb,var(--panel) 65%,transparent);border:1px solid var(--line);font-weight:700;min-height:2.4rem}
+.ok{color:var(--ok);font-weight:800}
+.bad{color:var(--bad);font-weight:800}
+.warn{color:var(--warn);font-weight:800}
+.pill{display:inline-block;margin:.18rem .22rem .18rem 0;padding:.28rem .58rem;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-size:.87rem;font-weight:700}
+.pill.ok{border-color:color-mix(in srgb,var(--ok) 45%,transparent);background:color-mix(in srgb,var(--ok) 12%,transparent);color:var(--ok)}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{padding:.62rem .65rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.meter{width:100%;min-width:110px;height:13px;border-radius:999px;overflow:hidden;background:color-mix(in srgb,var(--line) 72%,transparent)}
+.meter span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.badge{min-height:145px}
+.figure-box{padding:.8rem;border-radius:18px;border:1px solid var(--line);background:var(--panel)}
+svg{width:100%;height:auto;display:block;border-radius:14px;background:color-mix(in srgb,var(--panel) 60%,transparent)}
+.figcaption{margin-top:.55rem;color:var(--muted);font-size:.92rem}
+.quiz label{display:flex;gap:.55rem;align-items:flex-start;margin:.55rem 0;font-weight:500}
+.quiz input[type="radio"]{margin-top:.24rem;width:18px;height:18px}
+.feedback{margin-top:.7rem;min-height:1.4rem;font-weight:700}
+details{margin-top:.75rem;border-top:1px dashed var(--line);padding-top:.6rem}
+summary{cursor:pointer;font-weight:800;color:var(--accent)}
+.btn-row{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem}
+.section-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:.8rem;margin-bottom:.9rem}
+.section-status{margin-top:.7rem}
+.footer{padding:1.2rem;border-top:1px solid var(--line);color:var(--muted);font-size:.94rem}
+.progress-wrap{display:flex;align-items:center;gap:.5rem;padding:.35rem .6rem;border-radius:999px;background:var(--card)}
+progress{width:130px;height:12px;border-radius:999px;overflow:hidden;accent-color:var(--accent)}
+
+/* ======= GAME EXTENSIONS ======= */
+.journey-map{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1rem;margin-bottom:1.5rem;box-shadow:var(--shadow);overflow-x:auto}
+.journey-map h4{margin:0 0 .6rem;font-size:.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.journey-svg{width:100%;min-width:960px;height:130px;display:block;border-radius:8px;background:transparent}
+.journey-svg .node{cursor:pointer}
+.journey-svg .node circle{stroke-width:3;transition:all .3s}
+.journey-svg .node.locked circle{fill:var(--bg);stroke:var(--line);opacity:.6}
+.journey-svg .node.current circle{fill:var(--gold);stroke:var(--accent);stroke-width:4;animation:nodePulse 1.5s infinite}
+.journey-svg .node.mastered circle{fill:var(--ok);stroke:var(--ok)}
+.journey-svg .node text{font-size:10px;font-weight:800;fill:#fff;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.journey-svg .node.locked text{fill:var(--muted)}
+.journey-svg .node-label{font-size:9px;font-weight:700;fill:var(--text);text-anchor:middle}
+@keyframes nodePulse{0%,100%{r:16}50%{r:20}}
+
+.quests-card{background:linear-gradient(135deg,color-mix(in srgb,var(--purple) 8%,var(--card)),var(--card));border:2px solid var(--purple);border-radius:18px;padding:1rem;margin-bottom:1.5rem}
+.quests-card h4{margin:0 0 .6rem;font-size:.85rem;color:var(--purple);text-transform:uppercase;letter-spacing:.6px}
+.quest-item{display:flex;align-items:center;gap:.7rem;padding:.55rem .65rem;background:var(--panel);border-radius:8px;margin:.3rem 0;font-size:.85rem;min-height:44px}
+.quest-item.done{background:color-mix(in srgb,var(--ok) 12%,transparent)}
+.quest-item .q-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;background:var(--card)}
+.quest-item.done .q-check{background:var(--ok);border-color:var(--ok);color:#fff}
+.quest-item .q-text{flex:1}
+.quest-item.done .q-text{text-decoration:line-through;opacity:.8}
+.quest-item .q-reward{color:var(--purple);font-weight:800}
+
+.dashboard{background:linear-gradient(135deg,var(--bg),var(--card));border:2px solid var(--accent);border-radius:18px;padding:1rem;margin:1rem 0;box-shadow:var(--shadow)}
+.dashboard .tool-head{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:.6rem}
+.dashboard .tool-badge{background:var(--ok);color:#fff;font-size:.68rem;font-weight:800;padding:.18rem .6rem;border-radius:6px;letter-spacing:.5px;text-transform:uppercase}
+.dashboard .tool-title{font-weight:800;color:var(--text);font-size:1rem}
+.dashboard .tool-hint{background:var(--card);border-left:3px solid var(--accent);border-radius:6px;padding:.5rem .7rem;font-size:.84rem;margin-bottom:.7rem}
+.mastery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.6rem;margin-top:.6rem}
+.mastery-item{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:.6rem .7rem;cursor:pointer}
+.mastery-item .mi-title{font-size:.78rem;font-weight:700;margin-bottom:.4rem}
+.mastery-item .mi-bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.mastery-item .mi-bar>div{height:100%;transition:width .4s}
+.mastery-item .mi-meta{font-size:.68rem;color:var(--muted);margin-top:.3rem;display:flex;justify-content:space-between}
+#due-list{margin-top:.8rem;padding:.7rem;background:var(--card);border-radius:10px;border:1px solid var(--line)}
+.due-chip{display:inline-flex;align-items:center;margin:.2rem .3rem .2rem 0;padding:.45rem .8rem;background:var(--bg);border:1px solid var(--gold);border-radius:999px;color:var(--text);font-weight:700;font-size:.8rem;text-decoration:none;min-height:36px}
+.recommend{background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 10%,transparent),color-mix(in srgb,var(--accent-2) 10%,transparent));border:2px solid var(--accent);border-radius:12px;padding:.8rem 1rem;margin-top:.7rem}
+.recommend h5{margin:0 0 .3rem;color:var(--accent);font-size:.75rem;text-transform:uppercase;letter-spacing:.5px}
+.recommend .rec-title{font-size:1rem;font-weight:800;margin-bottom:.2rem}
+.recommend .rec-desc{font-size:.85rem;color:var(--muted);margin-bottom:.6rem}
+
+.bp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem}
+.bp-card{aspect-ratio:3/4;perspective:1000px;cursor:pointer;position:relative}
+.bp-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .6s}
+.bp-card.flipped .bp-inner{transform:rotateY(180deg)}
+.bp-front,.bp-back{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;padding:.7rem;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;box-shadow:var(--shadow)}
+.bp-front{background:linear-gradient(135deg,var(--accent-2),var(--accent));color:#fff;border:2px solid var(--gold)}
+.bp-front .bp-icon{font-size:2rem;margin-bottom:.4rem}
+.bp-front .bp-title{font-weight:800;font-size:.78rem;line-height:1.2}
+.bp-back{background:var(--card);color:var(--text);transform:rotateY(180deg);border:2px solid var(--accent-2);font-size:.72rem;line-height:1.4;text-align:left;justify-content:flex-start}
+.bp-back .bp-back-title{font-weight:800;color:var(--accent-2);font-size:.78rem;margin-bottom:.4rem}
+.bp-card.locked{cursor:not-allowed}
+.bp-card.locked .bp-front{background:var(--line);color:var(--muted);border-color:var(--line)}
+.bp-card.locked::after{content:'🔒';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1.8rem;z-index:10}
+.bp-card.locked .bp-inner{opacity:.5;filter:grayscale(.8)}
+
+.achievements{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem;margin:.7rem 0}
+.ach-badge{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:.7rem;text-align:center;opacity:.4;transition:.3s}
+.ach-badge.unlocked{opacity:1;border-color:var(--gold);background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 10%,transparent),var(--card))}
+.ach-badge .icon{font-size:28px;margin-bottom:.2rem}
+.ach-badge .name{font-size:.72rem;font-weight:800;color:var(--text)}
+.ach-badge .desc{font-size:.65rem;color:var(--muted)}
+
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(150%);background:var(--text);color:var(--card);padding:.8rem 1.4rem;border-radius:10px;font-weight:700;z-index:1000;box-shadow:var(--shadow);transition:transform .35s;font-size:.9rem;max-width:90vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.ok{background:var(--ok);color:#fff}
+.toast.bad{background:var(--bad);color:#fff}
+.toast.big{font-size:1.05rem;padding:1rem 2rem;font-weight:800}
+
+.dmg-float{position:fixed;pointer-events:none;font-weight:900;font-size:1.5rem;z-index:9999;animation:dmgFloat 1.2s ease-out forwards;text-shadow:0 2px 4px rgba(0,0,0,.3)}
+.dmg-float.crit{font-size:2rem;color:var(--gold);animation:dmgCrit 1.4s ease-out forwards}
+.dmg-float.positive{color:var(--ok)}
+.dmg-float.negative{color:var(--bad)}
+@keyframes dmgFloat{0%{transform:translate(-50%,-50%) scale(.5);opacity:0}20%{transform:translate(-50%,-60%) scale(1.3);opacity:1}100%{transform:translate(-50%,-120%) scale(1);opacity:0}}
+@keyframes dmgCrit{0%{transform:translate(-50%,-50%) scale(.3);opacity:0}15%{transform:translate(-50%,-60%) scale(1.8);opacity:1}100%{transform:translate(-50%,-150%) scale(1.2);opacity:0}}
+
+.confetti-piece{position:fixed;top:-20px;z-index:9999;pointer-events:none;animation:confettiFall 2.5s linear forwards}
+@keyframes confettiFall{to{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+.levelup-overlay{position:fixed;inset:0;z-index:9998;pointer-events:none;display:flex;align-items:center;justify-content:center;animation:levelupFade 2s ease forwards}
+.levelup-overlay .lvl-text{font-size:4rem;font-weight:900;background:linear-gradient(45deg,var(--gold),var(--accent),var(--accent-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:levelupZoom 2s ease forwards}
+@keyframes levelupFade{0%{opacity:0}20%{opacity:1}80%{opacity:1}100%{opacity:0}}
+@keyframes levelupZoom{0%{transform:scale(.3) rotate(-15deg)}50%{transform:scale(1.2) rotate(5deg)}100%{transform:scale(1)}}
+
+.modal{position:fixed;inset:0;display:grid;place-items:center;padding:1rem;background:rgba(0,0,0,.5);z-index:150}
+.modal[hidden]{display:none}
+.modal-card{width:min(680px,100%);max-height:92vh;overflow:auto;padding:1.2rem}
+.modal-actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem}
+
+.boss-arena{background:linear-gradient(180deg,var(--panel),var(--bg));color:var(--text);border-radius:18px;padding:1.2rem;max-width:680px;width:100%;border:3px solid var(--gold);box-shadow:var(--shadow)}
+.boss-header{display:flex;align-items:center;gap:.9rem;margin-bottom:1rem;flex-wrap:wrap}
+.boss-portrait{font-size:2.8rem;line-height:1;animation:bossFloat 3s ease-in-out infinite}
+@keyframes bossFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.boss-title{flex:1;min-width:150px}
+.boss-title h3{margin:0;color:var(--accent);font-size:1.15rem}
+.boss-title p{margin:.1rem 0 0;font-size:.8rem;color:var(--muted)}
+.boss-hp-bar{background:var(--line);border-radius:99px;height:20px;overflow:hidden;position:relative;margin-bottom:.5rem;border:1px solid var(--line)}
+.boss-hp-fill{height:100%;background:linear-gradient(90deg,var(--bad),#ef4444);transition:width .6s ease}
+.boss-hp-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:#fff}
+.boss-lives{display:flex;gap:.3rem;margin-bottom:.7rem}
+.boss-lives .life{font-size:1.2rem;transition:opacity .3s}
+.boss-lives .life.lost{opacity:.2;filter:grayscale(1)}
+.boss-question{background:var(--card);border-radius:10px;padding:.9rem;margin-bottom:.7rem;font-weight:700;min-height:60px;border-left:4px solid var(--gold)}
+.boss-timer{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:.7rem}
+.boss-timer>div{height:100%;background:linear-gradient(90deg,var(--ok),var(--gold),var(--bad));transition:width .1s linear}
+.boss-options{display:grid;gap:.4rem}
+.boss-options button{padding:.6rem .8rem;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--text);text-align:left;cursor:pointer;font-size:.9rem;font-weight:600;min-height:44px;transition:.15s}
+.boss-options button.correct{background:var(--ok);border-color:var(--ok);color:#fff}
+.boss-options button.wrong{background:var(--bad);border-color:var(--bad);color:#fff;animation:shake .35s}
+.boss-options button:disabled{cursor:default;opacity:.7}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.boss-result{text-align:center;padding:1.5rem 1rem}
+.boss-result h2{font-size:2rem;margin:0 0 .5rem}
+.boss-result.victory h2{color:var(--ok)}
+.boss-result.defeat h2{color:var(--bad)}
+.boss-result .reward{font-size:1.05rem;margin:.7rem 0;color:var(--gold);font-weight:800}
+
+.boss-trigger{margin:1rem 0;padding:1rem;background:linear-gradient(135deg,color-mix(in srgb,#dc2626 85%,#000),var(--bad));border-radius:14px;text-align:center;color:#fff;box-shadow:var(--shadow);border:3px solid var(--gold)}
+.boss-trigger h3{margin:0 0 .3rem;font-size:1.1rem;color:var(--gold)}
+.boss-trigger p{margin:0 0 .7rem;font-size:.85rem;opacity:.95}
+.boss-trigger button{background:var(--gold);color:#7f1d1d;border:none;min-height:44px;padding:.7rem 1.6rem;border-radius:10px;font-weight:900;font-size:.95rem;cursor:pointer}
+.boss-trigger.defeated{background:linear-gradient(135deg,color-mix(in srgb,var(--ok) 85%,#000),var(--ok))}
+.boss-trigger.defeated button{background:#fff;color:var(--ok)}
+
+.speed-timer{font-size:2rem;font-weight:900;color:var(--accent);font-variant-numeric:tabular-nums}
+.speed-timer.danger{color:var(--bad);animation:pulseCombo .5s infinite}
+.speed-q{font-size:1rem;font-weight:700;margin-bottom:.7rem;color:var(--text)}
+.speed-options{display:flex;flex-direction:column;gap:.4rem}
+.speed-options button{padding:.65rem .9rem;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--text);text-align:left;cursor:pointer;font-size:.9rem;font-weight:600;min-height:46px}
+.speed-options button.correct{background:var(--ok);border-color:var(--ok);color:#fff}
+.speed-options button.wrong{background:var(--bad);border-color:var(--bad);color:#fff}
+.speed-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+
+.avatar-card{background:var(--card);border-radius:18px;padding:1.4rem;max-width:500px;width:100%;box-shadow:var(--shadow);border:2px solid var(--gold)}
+.avatar-card h2{margin:0 0 .5rem;color:var(--accent);text-align:center}
+.avatar-card .avatar-big{width:140px;height:140px;margin:1rem auto}
+.avatar-card .avatar-big svg{width:100%;height:100%}
+.avatar-stage{font-size:.9rem;color:var(--muted);margin:.5rem 0;text-align:center}
+.avatar-progress{background:var(--line);border-radius:99px;height:12px;overflow:hidden;margin:.7rem 0}
+.avatar-progress>div{height:100%;background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .8s}
+.avatar-milestones{text-align:left;font-size:.82rem;margin-top:.7rem;background:var(--bg);border-radius:8px;padding:.7rem;max-height:200px;overflow-y:auto;list-style:none;padding-left:1rem}
+.avatar-milestones li{margin:.2rem 0;color:var(--muted)}
+.avatar-milestones li.done{color:var(--ok);font-weight:700}
+
+.bearing-illustration{background:var(--card);border:2px solid var(--accent);border-radius:14px;padding:1rem;margin:1rem 0;box-shadow:var(--shadow)}
+.bi-header h4{font-size:1rem;color:var(--accent);margin:0 0 .2rem}
+.bi-header p{font-size:.85rem;color:var(--muted);margin:.2rem 0 .8rem}
+.bi-views{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.8rem}
+.bi-view{background:var(--bg);border-radius:10px;padding:.6rem;border:1px solid var(--line)}
+.bi-view-label{font-size:.75rem;font-weight:800;color:var(--accent);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.4px;display:flex;align-items:center;gap:.4rem}
+.bi-view-label .vl-num{background:var(--accent);color:#fff;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:900;flex-shrink:0}
+.bi-view svg{width:100%;height:auto;display:block;background:var(--card);border-radius:6px;border:1px solid var(--line)}
+.bi-legend{background:var(--bg);border-radius:10px;padding:.8rem;border:1px solid var(--line)}
+.bi-legend h5{margin:0 0 .7rem;color:var(--accent);font-size:.9rem;text-transform:uppercase;letter-spacing:.4px;font-weight:800}
+.bi-item{display:flex;gap:.6rem;align-items:flex-start;margin-bottom:.6rem;padding-bottom:.6rem;border-bottom:1px dashed var(--line)}
+.bi-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.bi-num{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border-radius:50%;color:#fff;font-weight:900;font-size:.85rem;flex-shrink:0;box-shadow:0 2px 4px rgba(0,0,0,.15)}
+.bi-item .bi-content{flex:1;font-size:.83rem}
+.bi-item .bi-content b{color:var(--accent);display:block;margin-bottom:.15rem;font-size:.9rem}
+.bi-item .bi-desc{color:var(--text);line-height:1.5;margin-top:.2rem}
+.bi-item .bi-desc code{background:var(--line);padding:1px 5px;border-radius:4px;font-family:ui-monospace,monospace;font-size:.78rem;color:var(--accent)}
+.bi-value-live{display:inline-block;background:color-mix(in srgb,var(--gold) 20%,transparent);color:var(--gold);padding:1px 7px;border-radius:5px;font-weight:800;font-family:ui-monospace,monospace;font-size:.8rem;margin-left:.3rem}
+.bi-values{display:flex;flex-wrap:wrap;gap:.5rem;background:color-mix(in srgb,var(--ok) 8%,transparent);border:1px solid color-mix(in srgb,var(--ok) 30%,transparent);border-left:4px solid var(--ok);border-radius:8px;padding:.7rem;font-size:.82rem;margin-top:.7rem}
+.bi-values span{font-family:ui-monospace,monospace;background:var(--card);padding:2px 9px;border-radius:6px;border:1px solid var(--line)}
+.bi-values b{color:var(--ok);font-weight:900}
+
+@media(max-width:980px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:fixed;inset:0 auto 0 0;width:min(86vw,330px);z-index:120;transform:translateX(-105%);transition:transform .18s ease;box-shadow:20px 0 50px rgba(0,0,0,.22)}
+  .sidebar.open{transform:translateX(0)}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .bi-views{grid-template-columns:1fr}
+  progress{width:90px}
+  .hud-row{font-size:.75rem}
+  .hud-xp-bar{width:70px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Aller au contenu principal</a>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar" aria-label="Navigation principale">
+    <h1>Parcours du module</h1>
+    <nav>
+      <a href="#accueil">🏠 Accueil</a>
+      <a href="#parcours">🗺️ Parcours</a>
+      <a href="#s-intro">1. Introduction</a>
+      <a href="#s-weld">2. Assemblages soudés</a>
+      <a href="#s-column">3. Âme du poteau</a>
+      <a href="#s-bolt">4. Boulons</a>
+      <a href="#s-hr">5. Boulons HR</a>
+      <a href="#s-fiab">6. Fiabilité et sécurité</a>
+      <a href="#s-recap">7. Bilan et maîtrise</a>
+    </nav>
+
+    <div class="card stack" style="margin-top:1rem;">
+      <div class="sidebar-game" style="background:var(--card);border:1px solid var(--line);">
+        <div class="sg-row"><span>Niveau</span><strong id="sb-lvl">1</strong></div>
+        <div class="sg-row"><span>XP</span><strong id="sb-xp">0/100</strong></div>
+        <div class="sg-row"><span>💎 Gemmes</span><strong id="sb-gems">0</strong></div>
+        <div class="sg-row"><span>💡 Indices</span><strong id="sb-hints">3</strong></div>
+        <div class="sg-row"><span>🔥 Combo</span><strong id="sb-combo">0</strong></div>
+      </div>
+      <div class="btn-row" style="margin-top:.4rem">
+        <button onclick="openSpeedRound()">⚡ Speed</button>
+        <button class="secondary" onclick="openAvatar()">👤 Profil</button>
+      </div>
+      <button class="secondary" onclick="resetState()">Réinitialiser la progression</button>
+      <div class="small muted">
+        Séquence conseillée :<br>
+        <strong>Concept → figure → formule → calculateur → quiz → défi</strong>
+      </div>
+    </div>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <button id="menuBtn" class="secondary icon-btn" aria-label="Menu" onclick="toggleSidebar()">☰</button>
+
+      <div class="title">
+        <strong>Assemblages poutre-poteau</strong>
+        <small>Module interactif gamifié — Master 1 Structure</small>
+      </div>
+
+      <div class="hud-row" aria-label="Progression du joueur">
+        <span class="hud-level">Lv.<span id="hud-lvl">1</span></span>
+        <div class="hud-xp-bar"><div id="hud-xp"></div></div>
+        <span class="hud-gem">💎 <span id="hud-gems">0</span></span>
+        <span class="hud-hint">💡 <span id="hud-hints">3</span></span>
+        <span class="hud-combo" id="hud-combo"></span>
+      </div>
+
+      <div class="progress-wrap" aria-label="Progression globale">
+        <span class="small">Maîtrise</span>
+        <progress id="headerProgress" max="100" value="0"></progress>
+        <strong id="headerProgressText">0%</strong>
+      </div>
+
+      <div class="top-actions">
+        <button class="secondary icon-btn" onclick="openSpeedRound()" title="Speed Round" aria-label="Speed Round">⚡</button>
+        <button class="secondary icon-btn" onclick="openAvatar()" title="Profil" aria-label="Profil">👤</button>
+        <button class="secondary icon-btn" onclick="toggleSound()" id="hud-sound" title="Son" aria-label="Son">🔊</button>
+        <button class="secondary icon-btn" onclick="toggleTheme()" aria-label="Thème">🌓</button>
+        <button class="secondary icon-btn" onclick="openHelp()" aria-label="Aide">?</button>
+      </div>
+    </header>
+
+    <main id="main">
+
+      <!-- JOURNEY MAP -->
+      <div class="journey-map">
+        <h4>🗺️ Votre parcours</h4>
+        <svg class="journey-svg" viewBox="0 0 1100 130" id="journey-svg"></svg>
+      </div>
+
+      <!-- QUESTS -->
+      <div class="quests-card">
+        <h4>📜 Quêtes du jour</h4>
+        <div id="quests-list"></div>
+      </div>
+
+      <!-- DASHBOARD -->
+      <div class="dashboard" id="dashboard">
+        <div class="tool-head">
+          <span class="tool-badge">Proactif</span>
+          <span class="tool-title">Tableau de maîtrise</span>
+        </div>
+        <div class="tool-hint">Les scores baissent avec le temps. Répétition espacée = +40 % de rétention.</div>
+        <div id="mastery-list" class="mastery-grid"></div>
+        <div id="due-list"><div id="due-items">—</div></div>
+        <div id="recommend-card"></div>
+      </div>
+
+      <!-- ================= ACCUEIL ================= -->
+      <section id="accueil">
+        <h2>Module gamifié : intuitif, interactif et centré sur l'étudiant</h2>
+        <div class="grid grid-3">
+          <article class="card">
+            <h3>🎯 Objectifs</h3>
+            <ul>
+              <li>Comprendre les mécanismes de transmission des efforts.</li>
+              <li>Vérifier soudures, âme du poteau et boulons.</li>
+              <li>Relier formule, figure et mode de ruine.</li>
+              <li>Développer le jugement d'ingénieur.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>🧭 Comment utiliser</h3>
+            <ul>
+              <li>Lire le concept et les définitions.</li>
+              <li>Observer la figure interactive.</li>
+              <li>Utiliser le calculateur pas à pas.</li>
+              <li>Tester ses connaissances avec les quiz et les boss.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>🎮 Gamification</h3>
+            <ul>
+              <li>XP, niveaux et gemmes.</li>
+              <li>Boss avec HP, vies et chrono.</li>
+              <li>Speed Round pour réviser.</li>
+              <li>Blueprints et badges à collectionner.</li>
+            </ul>
+          </article>
+        </div>
+        <div class="btn-row">
+          <a href="#parcours"><button>Commencer le parcours</button></a>
+          <a href="#s-intro"><button class="secondary">Aller à l'introduction</button></a>
+        </div>
+      </section>
+
+      <!-- ================= PARCOURS ================= -->
+      <section id="parcours">
+        <div class="section-head">
+          <h2>🗺️ Votre parcours</h2>
+          <span class="pill">Progression enregistrée localement</span>
+        </div>
+        <div class="grid grid-3">
+          <article class="card">
+            <h3>1. Introduction</h3>
+            <p class="small">Vue générale, composants, rôle des assemblages.</p>
+            <span id="status-intro" class="pill">À faire</span>
+            <div class="btn-row">
+              <a href="#s-intro"><button class="secondary">Ouvrir</button></a>
+              <button onclick="markSection('intro')">Marquer terminé</button>
+            </div>
+          </article>
+          <article class="card">
+            <h3>2. Soudure</h3>
+            <p class="small">EQ-1 à EQ-4 : cordons frontaux, latéraux, V+M.</p>
+            <span id="status-weld" class="pill">À faire</span>
+            <div class="btn-row">
+              <a href="#s-weld"><button class="secondary">Ouvrir</button></a>
+              <button onclick="markSection('weld')">Marquer terminé</button>
+            </div>
+          </article>
+          <article class="card">
+            <h3>3. Âme du poteau</h3>
+            <p class="small">EQ-5 et EQ-6 : traction transversale et cisaillement.</p>
+            <span id="status-column" class="pill">À faire</span>
+            <div class="btn-row">
+              <a href="#s-column"><button class="secondary">Ouvrir</button></a>
+              <button onclick="markSection('column')">Marquer terminé</button>
+            </div>
+          </article>
+          <article class="card">
+            <h3>4. Boulons</h3>
+            <p class="small">EQ-7 à EQ-10 : traction, cisaillement, bearing, interaction.</p>
+            <span id="status-bolt" class="pill">À faire</span>
+            <div class="btn-row">
+              <a href="#s-bolt"><button class="secondary">Ouvrir</button></a>
+              <button onclick="markSection('bolt')">Marquer terminé</button>
+            </div>
+          </article>
+          <article class="card">
+            <h3>5. Boulons HR</h3>
+            <p class="small">EQ-11 : précontrainte et frottement.</p>
+            <span id="status-hr" class="pill">À faire</span>
+            <div class="btn-row">
+              <a href="#s-hr"><button class="secondary">Ouvrir</button></a>
+              <button onclick="markSection('hr')">Marquer terminé</button>
+            </div>
+          </article>
+          <article class="card">
+            <h3>6. Fiabilité</h3>
+            <p class="small">Incertitude, risque, indice β et coefficients partiels.</p>
+            <span id="status-fiab" class="pill">À faire</span>
+            <div class="btn-row">
+              <a href="#s-fiab"><button class="secondary">Ouvrir</button></a>
+              <button onclick="markSection('fiab')">Marquer terminé</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ================= INTRO ================= -->
+      <section id="s-intro">
+        <div class="section-head">
+          <h2>1. Introduction</h2>
+          <button class="secondary" onclick="markSection('intro')">Marquer comme terminé</button>
+        </div>
+        <div class="stack">
+          <div class="box coursbox">
+            <h3>Concept</h3>
+            <p>Les structures métalliques sont constituées de profilés fabriqués en usine puis assemblés sur site. Les assemblages poutre-poteau ont un double rôle : <strong>transmettre les efforts</strong> et <strong>contribuer à la stabilité globale</strong>.</p>
+          </div>
+          <div class="grid grid-2">
+            <figure class="figure-box">
+              <svg viewBox="0 0 620 300" role="img" aria-label="Assemblage poutre-poteau par platine boulonnée">
+                <rect x="240" y="20" width="95" height="260" fill="color-mix(in srgb, var(--accent) 16%, transparent)" stroke="currentColor"></rect>
+                <rect x="335" y="110" width="235" height="58" fill="color-mix(in srgb, var(--accent-2) 16%, transparent)" stroke="currentColor"></rect>
+                <rect x="315" y="86" width="24" height="110" fill="color-mix(in srgb, #d97706 22%, transparent)" stroke="currentColor"></rect>
+                <circle cx="327" cy="105" r="6" fill="currentColor"></circle>
+                <circle cx="327" cy="135" r="6" fill="currentColor"></circle>
+                <circle cx="327" cy="165" r="6" fill="currentColor"></circle>
+                <line x1="430" y1="70" x2="430" y2="105" stroke="#dc2626" stroke-width="4"></line>
+                <polygon points="430,113 424,101 436,101" fill="#dc2626"></polygon>
+                <text x="440" y="82" fill="currentColor">V</text>
+                <text x="245" y="18" fill="currentColor">Poteau</text>
+                <text x="480" y="100" fill="currentColor">Poutre</text>
+                <text x="250" y="215" fill="currentColor">Platine + boulons</text>
+              </svg>
+              <figcaption class="figcaption">FIG-1 — Assemblage poutre-poteau par platine boulonnée.</figcaption>
+            </figure>
+            <div class="stack">
+              <div class="box defbox">
+                <h3>Définitions clés</h3>
+                <ul>
+                  <li><strong>Platine</strong> : plaque d'about de la poutre.</li>
+                  <li><strong>Boulons</strong> : transmettent traction, cisaillement et efforts combinés.</li>
+                  <li><strong>Soudure</strong> : relie la poutre à la platine ou au poteau.</li>
+                  <li><strong>Âme du poteau</strong> : zone sollicitée par la connexion.</li>
+                </ul>
+              </div>
+              <div class="quiz card" data-name="intro1" data-eq="EQ-9" data-correct="b" data-explain="Les assemblages participent à la stabilité globale, pas seulement à la transmission locale des efforts.">
+                <h3>Mini diagnostic</h3>
+                <p>Le rôle d'un assemblage est :</p>
+                <label><input type="radio" name="intro1" value="a"> Uniquement décoratif</label>
+                <label><input type="radio" name="intro1" value="b"> Transmettre les efforts et contribuer à la stabilité</label>
+                <label><input type="radio" name="intro1" value="c"> Réduire le poids de la structure</label>
+                <div class="btn-row"><button class="quiz-check secondary">Vérifier</button></div>
+                <div class="feedback" aria-live="polite"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SOUDURE ================= -->
+      <section id="s-weld">
+        <div class="section-head">
+          <h2>2. Assemblages soudés</h2>
+          <button class="secondary" onclick="markSection('weld')">Marquer comme terminé</button>
+        </div>
+        <div class="stack">
+          <div class="box coursbox">
+            <h3>Cours</h3>
+            <p><strong>Avantages :</strong> continuité de matière, bonne transmission des efforts, économie de pièces secondaires, esthétique.<br>
+            <strong>Inconvénients :</strong> déformations thermiques, contrôle coûteux, main-d'œuvre qualifiée.<br>
+            <strong>Trois zones :</strong> fondue, pénétration, transition.</p>
+          </div>
+
+          <article class="equation-card" id="card-EQ-1">
+            <h3>EQ-1 — Critère von Mises pour cordon d'angle</h3>
+            <div class="formula">\[\beta_w\sqrt{\sigma^2 + 3(\tau_1^2 + \tau_2^2)} \leq \frac{R_w}{\gamma_{mw}}\]</div>
+            <div class="calculator">
+              <h4>🔍 Vérificateur interactif</h4>
+              <div class="grid grid-2">
+                <div><label for="w1_sigma">σ (MPa)</label><input id="w1_sigma" type="number" value="30" min="0"></div>
+                <div><label for="w1_tau1">τ₁ (MPa)</label><input id="w1_tau1" type="number" value="40" min="0"></div>
+                <div><label for="w1_tau2">τ₂ (MPa)</label><input id="w1_tau2" type="number" value="20" min="0"></div>
+                <div><label for="w1_nuance">Nuance</label><select id="w1_nuance"><option value="S235" selected>S235</option><option value="S355">S355</option></select></div>
+              </div>
+              <div class="btn-row">
+                <button onclick="calcEQ1()">Calculer</button>
+                <button class="secondary" onclick="addEq('EQ-1', 10)">Marquer comme compris</button>
+              </div>
+              <div class="result" id="eq1_result" aria-live="polite">—</div>
+              <details><summary>Voir le détail</summary><div id="eq1_steps"></div></details>
+            </div>
+          </article>
+
+          <article class="equation-card" id="card-EQ-2">
+            <h3>EQ-2 — Cordons frontaux</h3>
+            <div class="formula">\[\sigma = \tau_2 = \frac{N\sqrt{2}}{2 a l_c}\]</div>
+            <div class="calculator">
+              <h4>🔍 Dimensionnement — cordons frontaux</h4>
+              <div class="grid grid-2">
+                <div><label for="w2_N">N (kN)</label><input id="w2_N" type="number" value="300" min="0"></div>
+                <div><label for="w2_lc">l_c (mm)</label><input id="w2_lc" type="number" value="150" min="1"></div>
+                <div><label for="w2_nb">Nombre de cordons</label><input id="w2_nb" type="number" value="2" min="1"></div>
+                <div><label for="w2_nuance">Nuance</label><select id="w2_nuance"><option value="S235" selected>S235</option><option value="S355">S355</option></select></div>
+              </div>
+              <div class="btn-row"><button onclick="calcEQ2()">Dimensionner</button></div>
+              <div class="result" id="eq2_result" aria-live="polite">—</div>
+              <details><summary>Voir le détail</summary><div id="eq2_steps"></div></details>
+            </div>
+          </article>
+
+          <article class="equation-card" id="card-EQ-3">
+            <h3>EQ-3 — Cordons latéraux</h3>
+            <div class="formula">\[\tau_1 = \frac{N}{a l_c}\]</div>
+            <div class="calculator">
+              <h4>🔍 Dimensionnement — cordons latéraux</h4>
+              <div class="grid grid-2">
+                <div><label for="w3_N">N (kN)</label><input id="w3_N" type="number" value="400" min="0"></div>
+                <div><label for="w3_lc">l_c (mm)</label><input id="w3_lc" type="number" value="250" min="1"></div>
+                <div><label for="w3_nb">Nombre de cordons</label><input id="w3_nb" type="number" value="2" min="1"></div>
+                <div><label for="w3_nuance">Nuance</label><select id="w3_nuance"><option value="S235" selected>S235</option><option value="S355">S355</option></select></div>
+              </div>
+              <div class="btn-row"><button onclick="calcEQ3()">Dimensionner</button></div>
+              <div class="result" id="eq3_result" aria-live="polite">—</div>
+              <details><summary>Voir le détail</summary><div id="eq3_steps"></div></details>
+            </div>
+          </article>
+
+          <article class="equation-card" id="card-EQ-4">
+            <h3>EQ-4 — Assemblage sous V et M</h3>
+            <div class="formula">\[\sigma = \tau_2 = \frac{3M}{a l_c^2 \sqrt{2}} \quad;\quad \tau_1 = \frac{V\sqrt{3}}{2 a l_c}\]</div>
+            <div class="calculator">
+              <h4>🔍 Vérification — V + M</h4>
+              <div class="grid grid-2">
+                <div><label for="w4_V">V (kN)</label><input id="w4_V" type="number" value="100" min="0"></div>
+                <div><label for="w4_M">M (kN·m)</label><input id="w4_M" type="number" value="20" min="0"></div>
+                <div><label for="w4_lc">l_c (mm)</label><input id="w4_lc" type="number" value="400" min="1"></div>
+                <div><label for="w4_a">a (mm)</label><input id="w4_a" type="number" value="8" min="1"></div>
+                <div><label for="w4_nuance">Nuance</label><select id="w4_nuance"><option value="S235" selected>S235</option><option value="S355">S355</option></select></div>
+              </div>
+              <div class="btn-row"><button onclick="calcEQ4()">Vérifier</button></div>
+              <div class="result" id="eq4_result" aria-live="polite">—</div>
+              <details><summary>Voir le détail</summary><div id="eq4_steps"></div></details>
+            </div>
+          </article>
+
+          <div class="box warnbox">
+            <h3>Erreurs fréquentes</h3>
+            <ul>
+              <li>Confondre gorge <code>a</code> et jambe de soudure.</li>
+              <li>Oublier le nombre de cordons.</li>
+              <li>Mélanger kN et N, cm et mm.</li>
+              <li>Négliger la combinaison σ, τ₁ et τ₂.</li>
+            </ul>
+          </div>
+
+          <div class="quiz card" data-name="weld1" data-eq="EQ-2" data-correct="b" data-explain="La gorge est la base de la section efficace de calcul.">
+            <h3>Mini-quiz soudure</h3>
+            <p>La gorge d'un cordon d'angle correspond à :</p>
+            <label><input type="radio" name="weld1" value="a"> La largeur visible de la soudure</label>
+            <label><input type="radio" name="weld1" value="b"> La section efficace de calcul</label>
+            <label><input type="radio" name="weld1" value="c"> L'épaisseur de la tôle</label>
+            <div class="btn-row"><button class="quiz-check secondary">Vérifier</button></div>
+            <div class="feedback" aria-live="polite"></div>
+          </div>
+
+          <div class="boss-trigger" id="boss-trigger-weld">
+            <h3>⚔️ Boss — Le Maître des Soudures</h3>
+            <p>4 questions · 20s · 3 vies · 💎 +10</p>
+            <button onclick="startBoss('weld')">⚔️ Affronter</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= AME POUTRE ================= -->
+      <section id="s-column">
+        <div class="section-head">
+          <h2>3. Résistance de l'âme du poteau</h2>
+          <button class="secondary" onclick="markSection('column')">Marquer comme terminé</button>
+        </div>
+        <div class="stack">
+          <div class="box coursbox">
+            <h3>Compréhension physique</h3>
+            <p>L'âme du poteau peut être sollicitée par la connexion : traction transversale au droit des semelles de la poutre, et cisaillement dans le panneau d'âme.</p>
+          </div>
+
+          <article class="equation-card" id="card-EQ-5">
+            <h3>EQ-5 — Traction transversale</h3>
+            <div class="formula">\[F_t \leq t_{wc} b_{wf} \frac{R_y}{\gamma_{M0}}\quad;\quad b_{wf} = t_{fb} + 5(t_{fc} + r_c)\]</div>
+            <div class="calculator">
+              <h4>🔍 Vérification — traction transversale</h4>
+              <div class="grid grid-2">
+                <div><label for="c5_twc">t_wc (mm)</label><input id="c5_twc" type="number" value="8.5"></div>
+                <div><label for="c5_tfc">t_fc (mm)</label><input id="c5_tfc" type="number" value="14"></div>
+                <div><label for="c5_tfb">t_fb (mm)</label><input id="c5_tfb" type="number" value="13.5"></div>
+                <div><label for="c5_rc">r_c (mm)</label><input id="c5_rc" type="number" value="27"></div>
+                <div><label for="c5_Ry">R_y (MPa)</label><input id="c5_Ry" type="number" value="235"></div>
+                <div><label for="c5_Ft">F_t agissant (kN)</label><input id="c5_Ft" type="number" value="300"></div>
+              </div>
+              <div class="btn-row"><button onclick="calcEQ5()">Calculer</button></div>
+              <div class="result" id="eq5_result" aria-live="polite">—</div>
+              <details><summary>Voir le détail</summary><div id="eq5_steps"></div></details>
+            </div>
+          </article>
+
+          <article class="equation-card" id="card-EQ-6">
+            <h3>EQ-6 — Cisaillement de l'âme</h3>
+            <div class="formula">\[V_{pl} = 0{,}58 A_v \frac{R_y}{\gamma_{M0}}\quad;\quad A_v = A - 2 b t_f + (t_w + 2 r) t_f\]</div>
+            <div class="calculator">
+              <h4>🔍 Vérification — cisaillement âme</h4>
+              <div class="grid grid-2">
+                <div><label for="c6_A">A (cm²)</label><input id="c6_A" type="number" value="149"></div>
+                <div><label for="c6_b">b (mm)</label><input id="c6_b" type="number" value="300"></div>
+                <div><label for="c6_tf">t_f (mm)</label><input id="c6_tf" type="number" value="19"></div>
+                <div><label for="c6_tw">t_w (mm)</label><input id="c6_tw" type="number" value="11"></div>
+                <div><label for="c6_r">r (mm)</label><input id="c6_r" type="number" value="27"></div>
+                <div><label for="c6_Ry">R_y (MPa)</label><input id="c6_Ry" type="number" value="235"></div>
+                <div><label for="c6_V">V agissant (kN)</label><input id="c6_V" type="number" value="800"></div>
+              </div>
+              <div class="btn-row"><button onclick="calcEQ6()">Calculer</button></div>
+              <div class="result" id="eq6_result" aria-live="polite">—</div>
+              <details><summary>Voir le détail</summary><div id="eq6_steps"></div></details>
+            </div>
+          </article>
+
+          <div class="quiz card" data-name="column1" data-eq="EQ-5" data-correct="c" data-explain="b_wf représente la largeur efficace de l'âme sollicitée en traction transversale.">
+            <h3>Mini-quiz âme du poteau</h3>
+            <p>La quantité <code>b_wf</code> sert à :</p>
+            <label><input type="radio" name="column1" value="a"> Calculer le poids du poteau</label>
+            <label><input type="radio" name="column1" value="b"> Définir la longueur d'une soudure</label>
+            <label><input type="radio" name="column1" value="c"> Définir une largeur efficace pour la traction transversale</label>
+            <div class="btn-row"><button class="quiz-check secondary">Vérifier</button></div>
+            <div class="feedback" aria-live="polite"></div>
+          </div>
+
+          <div class="boss-trigger" id="boss-trigger-column">
+            <h3>⚔️ Boss — Le Seigneur de l'Âme</h3>
+            <p>4 questions · 20s · 3 vies · 💎 +15</p>
+            <button onclick="startBoss('column')">⚔️ Affronter</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= BOULONS ================= -->
+      <section id="s-bolt">
+        <div class="section-head">
+          <h2>4. Résistance des boulons</h2>
+          <button class="secondary" onclick="markSection('bolt')">Marquer comme terminé</button>
+        </div>
+        <div class="stack">
+          <div class="box coursbox">
+            <h3>Cours</h3>
+            <p>Un boulon peut être vérifié en traction, en cisaillement, en pression diamétrale et sous interaction. La géométrie de la platine influence fortement la résistance.</p>
+          </div>
+
+          <article class="equation-card" id="card-EQ-7">
+            <h3>EQ-7 — Traction du boulon</h3>
+            <div class="formula">\[F_{t,Rd} = \frac{k_2 f_{ub} A_s}{\gamma_{M2}}\]</div>
+            <div class="calculator">
+              <h4>🔍 Calcul — traction</h4>
+              <div class="grid grid-2">
+                <div><label for="b7_bolt">Boulon</label><select id="b7_bolt"><option value="M16">M16 (As=157 mm²)</option><option value="M20" selected>M20 (As=245 mm²)</option><option value="M24">M24 (As=353 mm²)</option><option value="M30">M30 (As=561 mm²)</option></select></div>
+                <div><label for="b7_class">Classe</label><select id="b7_class"><option value="4.6">4.6</option><option value="8.8" selected>8.8</option><option value="10.9">10.9</option></select></div>
+                <div><label for="b7_k2">k₂</label><select id="b7_k2"><option value="0.9" selected>0,9 — tête ordinaire</option><option value="0.63">0,63 — fraisée</option></select></div>
+              </div>
+              <div class="btn-row"><button onclick="calcEQ7()">Calculer</button></div>
+              <div class="result" id="eq7_result" aria-live="polite">—</div>
+              <details><summary>Voir le détail</summary><div id="eq7_steps"></div></details>
+            </div>
+          </article>
+
+          <article class="equation-card" id="card-EQ-8">
+            <h3>EQ-8 — Cisaillement du boulon</h3>
+            <div class="formula">\[F_{v,Rd} = \frac{\alpha_v f_{ub} A}{\gamma_{M2}}\]</div>
+            <div class="calculator">
+              <h4>🔍 Calcul — cisaillement</h4>
+              <div class="grid grid-2">
+                <div><label for="b8_bolt">Boulon</label><select id="b8_bolt"><option value="M16">M16</option><option value="M20" selected>M20</option><option value="M24">M24</option><option value="M30">M30</option></select></div>
+                <div><label for="b8_class">Classe</label><select id="b8_class"><option value="4.6">4.6</option><option value="8.8" selected>8.8</option><option value="10.9">10.9</option></select></div>
+                <div><label for="b8_plans">Plans de cisaillement</label><select id="b8_plans"><option value="1" selected>Simple</option><option value="2">Double</option></select></div>
+                <div><label for="b8_nb">Nombre de boulons</label><input id="b8_nb" type="number" value="4" min="1"></div>
+              </div>
+              <div class="btn-row"><button onclick="calcEQ8()">Calculer</button></div>
+              <div class="result" id="eq8_result" aria-live="polite">—</div>
+              <details><summary>Voir le détail</summary><div id="eq8_steps"></div></details>
+            </div>
+          </article>
+
+          <article class="equation-card" id="card-EQ-9">
+            <h3>EQ-9 — Pression diamétrale</h3>
+            <div class="formula">
+              \[F_{b,Rd} = \frac{k_1 \alpha_b f_u d t}{\gamma_{M2}}\]
+              \[\alpha_b = \min\left(\frac{e_1}{3d_0};\frac{p_1}{3d_0}-\frac{1}{4};\frac{f_{ub}}{f_u};1\right)\]
+              \[k_1 = \min\left(2{,}8\frac{e_2}{d_0}-1{,}7;1{,}4\frac{p_2}{d_0}-1{,}7;2{,}5\right)\]
+            </div>
+            <p><span class="pill">Figure interactive</span><span class="pill">Termes gouvernants</span><span class="pill">Temps réel</span></p>
+
+            <div class="grid grid-2">
+              <figure class="figure-box">
+                <svg id="bearingSvg" viewBox="0 0 430 430" role="img" aria-label="Platine boulonnée">
+                  <rect id="brPlate" x="45" y="45" width="240" height="240" fill="color-mix(in srgb, var(--accent) 14%, transparent)" stroke="currentColor"></rect>
+                  <circle id="hole1" cx="105" cy="105" r="16" fill="var(--panel)" stroke="currentColor" stroke-width="2"></circle>
+                  <circle id="hole2" cx="225" cy="105" r="16" fill="var(--panel)" stroke="currentColor" stroke-width="2"></circle>
+                  <circle id="hole3" cx="105" cy="225" r="16" fill="var(--panel)" stroke="currentColor" stroke-width="2"></circle>
+                  <circle id="hole4" cx="225" cy="225" r="16" fill="var(--panel)" stroke="currentColor" stroke-width="2"></circle>
+                  <circle id="bearingZone" cx="105" cy="105" r="22" fill="none" stroke="#dc2626" stroke-width="7" opacity="0.8"></circle>
+                  <line id="dimE1" x1="60" y1="45" x2="60" y2="105" stroke="#d97706" stroke-width="2.5" stroke-dasharray="5 4"></line>
+                  <line id="dimP1" x1="30" y1="105" x2="30" y2="225" stroke="#7c3aed" stroke-width="2.5" stroke-dasharray="5 4"></line>
+                  <line id="dimE2" x1="45" y1="60" x2="105" y2="60" stroke="#16a34a" stroke-width="2.5" stroke-dasharray="5 4"></line>
+                  <line id="dimP2" x1="105" y1="30" x2="225" y2="30" stroke="#2563eb" stroke-width="2.5" stroke-dasharray="5 4"></line>
+                  <text id="labelE1" x="4" y="82" fill="currentColor">e₁</text>
+                  <text id="labelP1" x="2" y="170" fill="currentColor">p₁</text>
+                  <text id="labelE2" x="60" y="22" fill="currentColor">e₂</text>
+                  <text id="labelP2" x="145" y="18" fill="currentColor">p₂</text>
+                  <text id="loadText" x="380" y="180" fill="#dc2626" font-size="22">V ↓</text>
+                </svg>
+                <figcaption class="figcaption">Vue en plan. Le croissant rouge représente la zone de pression diamétrale.</figcaption>
+              </figure>
+
+              <div class="calculator">
+                <h4>📐 Paramètres géométriques</h4>
+                <label for="br_e1">e₁ — pince longitudinale</label>
+                <input id="br_e1" type="range" min="25" max="100" value="40" oninput="syncBr('e1')">
+                <output id="br_e1_out">40 mm</output>
+                <label for="br_p1">p₁ — entraxe longitudinal</label>
+                <input id="br_p1" type="range" min="40" max="140" value="60" oninput="syncBr('p1')">
+                <output id="br_p1_out">60 mm</output>
+                <label for="br_e2">e₂ — pince transversale</label>
+                <input id="br_e2" type="range" min="25" max="100" value="40" oninput="syncBr('e2')">
+                <output id="br_e2_out">40 mm</output>
+                <label for="br_p2">p₂ — entraxe transversal</label>
+                <input id="br_p2" type="range" min="40" max="140" value="60" oninput="syncBr('p2')">
+                <output id="br_p2_out">60 mm</output>
+                <div class="grid grid-2">
+                  <div><label for="br_d">d (mm)</label><input id="br_d" type="number" value="20" min="1" oninput="calcBearing()"></div>
+                  <div><label for="br_d0">d₀ (mm)</label><input id="br_d0" type="number" value="22" min="1" oninput="calcBearing()"></div>
+                  <div><label for="br_t">t (mm)</label><input id="br_t" type="number" value="10" min="1" oninput="calcBearing()"></div>
+                  <div><label for="br_fu">f_u tôle (MPa)</label><input id="br_fu" type="number" value="360" min="1" oninput="calcBearing()"></div>
+                  <div><label for="br_fub">f_ub boulon (MPa)</label><input id="br_fub" type="number" value="800" min="1" oninput="calcBearing()"></div>
+                </div>
+                <div class="result" id="br_result" aria-live="polite">F_b,Rd = —</div>
+                <div class="result" id="br_warning" aria-live="polite"></div>
+                <details><summary>Voir les termes α_b et k₁</summary><div id="br_alpha" class="btn-row"></div><div id="br_k1" class="btn-row"></div></details>
+              </div>
+            </div>
+
+            <!-- Illustration détaillée plan + coupe -->
+            <div class="bearing-illustration" id="bearing-illustration">
+              <div class="bi-header">
+                <h4>📐 Illustration — Où sont les dimensions sur la platine ?</h4>
+                <p>Chaque dimension est repérée par un numéro coloré. Les valeurs s'actualisent en temps réel.</p>
+              </div>
+              <div class="bi-views">
+                <div class="bi-view">
+                  <div class="bi-view-label"><span class="vl-num">A</span> Vue en plan</div>
+                  <svg id="bi-plan" viewBox="0 0 600 540"></svg>
+                </div>
+                <div class="bi-view">
+                  <div class="bi-view-label"><span class="vl-num">B</span> Coupe A-A</div>
+                  <svg id="bi-section" viewBox="0 0 600 420"></svg>
+                </div>
+              </div>
+              <div class="bi-legend">
+                <h5>📍 Légende — chaque numéro explique SA position</h5>
+                <div class="bi-item">
+                  <span class="bi-num" style="background:#f59e0b">1</span>
+                  <div class="bi-content"><b>e₁ — Pince longitudinale</b><span class="bi-value-live" id="lv-e1">40 mm</span>
+                    <div class="bi-desc">Distance du <b>bord de la tôle</b> au <b>centre du trou</b>, <b>parallèlement à V</b>. Entre dans <code>αb = e1/(3·d0)</code>.</div>
+                  </div>
+                </div>
+                <div class="bi-item">
+                  <span class="bi-num" style="background:#8b5cf6">2</span>
+                  <div class="bi-content"><b>p₁ — Entraxe longitudinal</b><span class="bi-value-live" id="lv-p1">60 mm</span>
+                    <div class="bi-desc">Distance entre <b>deux trous alignés</b> dans la direction de V. Entre dans <code>αb = p1/(3·d0) − 0,25</code>.</div>
+                  </div>
+                </div>
+                <div class="bi-item">
+                  <span class="bi-num" style="background:#10b981">3</span>
+                  <div class="bi-content"><b>e₂ — Pince transversale</b><span class="bi-value-live" id="lv-e2">40 mm</span>
+                    <div class="bi-desc">Distance du <b>bord</b> au <b>centre du trou</b>, <b>perpendiculairement à V</b>. Entre dans <code>k₁ = 2,8·e2/d0 − 1,7</code>.</div>
+                  </div>
+                </div>
+                <div class="bi-item">
+                  <span class="bi-num" style="background:#0ea5e9">4</span>
+                  <div class="bi-content"><b>p₂ — Entraxe transversal</b><span class="bi-value-live" id="lv-p2">60 mm</span>
+                    <div class="bi-desc">Distance entre <b>deux rangées</b>, perpendiculairement à V. Entre dans <code>k₁ = 1,4·p2/d0 − 1,7</code>.</div>
+                  </div>
+                </div>
+                <div class="bi-item">
+                  <span class="bi-num" style="background:#dc2626">5</span>
+                  <div class="bi-content"><b>Zone de pression diamétrale (bearing)</b><span class="bi-value-live" id="lv-Fb">74,0 kN</span>
+                    <div class="bi-desc">Surface de <b>contact en croissant rouge</b> entre le boulon et la paroi du trou, du côté <b>opposé au sens de V</b>. Distribution <b>triangulaire</b>, max au plan médian.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="bi-values">
+                <span>e₁ = <b id="bi-e1">40</b> mm</span>
+                <span>p₁ = <b id="bi-p1">60</b> mm</span>
+                <span>e₂ = <b id="bi-e2">40</b> mm</span>
+                <span>p₂ = <b id="bi-p2">60</b> mm</span>
+                <span>d = <b id="bi-d">20</b> mm</span>
+                <span>d₀ = <b id="bi-d0">22</b> mm</span>
+                <span>t = <b id="bi-t">10</b> mm</span>
+                <span>F<sub>b,Rd</sub> = <b id="bi-Fb">74,0</b> kN</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="equation-card" id="card-EQ-10">
+            <h3>EQ-10 — Interaction F_v + F_t</h3>
+            <div class="formula">\[\frac{F_{v,Ed}}{F_{v,Rd}} + \frac{F_{t,Ed}}{1{,}4 F_{t,Rd}} \leq 1{,}0\]</div>
+            <div class="calculator">
+              <h4>🔍 Vérification — interaction</h4>
+              <div class="grid grid-2">
+                <div><label for="b10_FvEd">F_v,Ed (kN)</label><input id="b10_FvEd" type="number" value="60"></div>
+                <div><label for="b10_FvRd">F_v,Rd (kN)</label><input id="b10_FvRd" type="number" value="120.6"></div>
+                <div><label for="b10_FtEd">F_t,Ed (kN)</label><input id="b10_FtEd" type="number" value="50"></div>
+                <div><label for="b10_FtRd">F_t,Rd (kN)</label><input id="b10_FtRd" type="number" value="141.1"></div>
+              </div>
+              <div class="btn-row"><button onclick="calcEQ10()">Vérifier</button></div>
+              <div class="result" id="eq10_result" aria-live="polite">—</div>
+              <details><summary>Voir le détail</summary><div id="eq10_steps"></div></details>
+            </div>
+          </article>
+
+          <div class="quiz card" data-name="bolt1" data-eq="EQ-9" data-correct="b" data-explain="La pression diamétrale vérifie l'écrasement de la tôle au contact du boulon.">
+            <h3>Mini-quiz boulons</h3>
+            <p>La pression diamétrale correspond à :</p>
+            <label><input type="radio" name="bolt1" value="a"> La traction dans le boulon</label>
+            <label><input type="radio" name="bolt1" value="b"> L'écrasement de la tôle au droit du trou</label>
+            <label><input type="radio" name="bolt1" value="c"> La précontrainte du boulon HR</label>
+            <div class="btn-row"><button class="quiz-check secondary">Vérifier</button></div>
+            <div class="feedback" aria-live="polite"></div>
+          </div>
+
+          <div class="boss-trigger" id="boss-trigger-bolt">
+            <h3>⚔️ Boss — Le Titan des Boulons</h3>
+            <p>4 questions · 20s · 3 vies · 💎 +25</p>
+            <button onclick="startBoss('bolt')">⚔️ Affronter</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= HR ================= -->
+      <section id="s-hr">
+        <div class="section-head">
+          <h2>5. Boulons HR précontraints</h2>
+          <button class="secondary" onclick="markSection('hr')">Marquer comme terminé</button>
+        </div>
+        <div class="stack">
+          <div class="box coursbox">
+            <h3>Principe</h3>
+            <p>Dans un assemblage HR, la précontrainte serre les platines. L'effort tranchant peut alors être transmis par frottement plutôt que par cisaillement direct des boulons.</p>
+          </div>
+          <article class="equation-card" id="card-EQ-11">
+            <h3>EQ-11 — Précontrainte et frottement</h3>
+            <div class="formula">\[F_p = 0{,}7 A_s f_{ub}\quad;\quad F_s = \frac{K_s n_s \mu F_p}{\gamma_{ms}}\]</div>
+            <div class="calculator">
+              <h4>🔍 Calcul — boulon HR</h4>
+              <div class="grid grid-2">
+                <div><label for="h11_bolt">Boulon</label><select id="h11_bolt"><option value="M16">M16</option><option value="M20" selected>M20</option><option value="M24">M24</option></select></div>
+                <div><label for="h11_class">Classe</label><select id="h11_class"><option value="8.8" selected>8.8</option><option value="10.9">10.9</option></select></div>
+                <div><label for="h11_ks">K_s</label><select id="h11_ks"><option value="1" selected>Normal (1,0)</option><option value="0.85">Oblong (0,85)</option></select></div>
+                <div><label for="h11_plans">Plans</label><select id="h11_plans"><option value="1" selected>Simple</option><option value="2">Double</option></select></div>
+                <div><label for="h11_mu">μ — classe de surface</label><select id="h11_mu"><option value="0.5" selected>Classe A (0,5)</option><option value="0.4">Classe B (0,4)</option><option value="0.3">Classe C (0,3)</option></select></div>
+              </div>
+              <div class="btn-row"><button onclick="calcEQ11()">Calculer</button></div>
+              <div class="result" id="eq11_result" aria-live="polite">—</div>
+              <details><summary>Voir le détail</summary><div id="eq11_steps"></div></details>
+            </div>
+          </article>
+
+          <div class="quiz card" data-name="hr1" data-eq="EQ-11" data-correct="a" data-explain="Le frottement dépend de la précontrainte et du coefficient μ.">
+            <h3>Mini-quiz HR</h3>
+            <p>Dans un assemblage HR précontraint, l'effort tranchant peut être transmis par :</p>
+            <label><input type="radio" name="hr1" value="a"> Frottement entre platines</label>
+            <label><input type="radio" name="hr1" value="b"> Décoration de la tête du boulon</label>
+            <label><input type="radio" name="hr1" value="c"> Compression du béton</label>
+            <div class="btn-row"><button class="quiz-check secondary">Vérifier</button></div>
+            <div class="feedback" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= FIABILITE ================= -->
+      <section id="s-fiab">
+        <div class="section-head">
+          <h2>6. Fiabilité, incertitude et coefficients partiels</h2>
+          <button class="secondary" onclick="markSection('fiab')">Marquer comme terminé</button>
+        </div>
+        <div class="stack">
+          <div class="box coursbox">
+            <h3>Pourquoi des coefficients γ ?</h3>
+            <p>Les coefficients partiels comme <code>γ_M0</code>, <code>γ_M2</code> ou <code>γ_ms</code> ne sont pas arbitraires. Ils traduisent les incertitudes sur les matériaux, la fabrication, les modèles et les conséquences de la ruine.</p>
+          </div>
+          <div class="grid grid-2">
+            <div class="box defbox">
+              <h3>Définitions</h3>
+              <ul>
+                <li><strong>Incertitude aléatoire</strong> : inhérente à la nature.</li>
+                <li><strong>Incertitude épistémique</strong> : liée au manque de connaissance.</li>
+                <li><strong>Risque</strong> : \(R = P(E) \times C(E)\).</li>
+                <li><strong>Fiabilité</strong> : probabilité de remplir la fonction exigée.</li>
+              </ul>
+            </div>
+            <div class="box histbox">
+              <h3>Repères historiques</h3>
+              <ul>
+                <li><strong>1926</strong> : Mayer, coefficient de sécurité probabiliste.</li>
+                <li><strong>1947</strong> : Freudenthal, fiabilité structurale.</li>
+                <li><strong>1969</strong> : Cornell, indice β.</li>
+                <li><strong>1974</strong> : Hasofer & Lind, β invariant.</li>
+                <li><strong>Eurocode</strong> : cible β ≈ 3,8 pour 50 ans.</li>
+              </ul>
+            </div>
+          </div>
+
+          <article class="equation-card">
+            <h3>Indice de fiabilité simplifié</h3>
+            <div class="formula">\[\beta = \frac{\mu_R - \mu_E}{\sqrt{\sigma_R^2 + \sigma_E^2}}\quad;\quad P_f \approx \Phi(-\beta)\]</div>
+            <div class="calculator">
+              <h4>🔍 Calculateur β / P_f</h4>
+              <div class="grid grid-2">
+                <div><label for="beta_muR">μ_R (kN)</label><input id="beta_muR" type="number" value="250"></div>
+                <div><label for="beta_sdR">σ_R (kN)</label><input id="beta_sdR" type="number" value="30"></div>
+                <div><label for="beta_muE">μ_E (kN)</label><input id="beta_muE" type="number" value="150"></div>
+                <div><label for="beta_sdE">σ_E (kN)</label><input id="beta_sdE" type="number" value="25"></div>
+              </div>
+              <div class="btn-row"><button onclick="calcBeta()">Calculer β et P_f</button></div>
+              <div class="result" id="beta_result" aria-live="polite">—</div>
+              <details><summary>Voir le détail</summary><div id="beta_steps"></div></details>
+            </div>
+          </article>
+
+          <div class="box retbox">
+            <h3>À retenir</h3>
+            <p>Plus β est grand, plus la probabilité de défaillance est faible. Les coefficients partiels des assemblages visent implicitement un niveau de sécurité acceptable.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= BILAN ================= -->
+      <section id="s-recap">
+        <div class="section-head">
+          <h2>7. Bilan et maîtrise</h2>
+          <button class="secondary" onclick="markSection('recap')">Marquer comme terminé</button>
+        </div>
+        <div class="stack">
+          <div class="box retbox">
+            <h3>À retenir</h3>
+            <ul>
+              <li>Soudure d'angle : critère combiné σ, τ₁, τ₂.</li>
+              <li>Âme du poteau : traction transversale et cisaillement.</li>
+              <li>Boulons : traction, cisaillement, pression diamétrale, interaction.</li>
+              <li>HR : précontrainte et frottement.</li>
+              <li>La géométrie e₁, p₁, e₂, p₂ est décisive.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>📊 Tableau de maîtrise détaillé</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Équation</th><th>Thème</th><th>Maîtrise</th><th>%</th><th>Blueprint</th></tr></thead>
+                <tbody id="masteryBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>🏅 Badges</h3>
+            <div id="achievements" class="achievements"></div>
+          </div>
+
+          <div class="blueprints-section card">
+            <div class="section-head">
+              <h3>📐 Blueprints — Collection</h3>
+              <span class="pill"><span id="bp-count">0</span> / 11</span>
+            </div>
+            <p class="small muted">Chaque équation maîtrisée (≥ 80 %) débloque son blueprint.</p>
+            <div class="bp-grid" id="bp-grid"></div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="footer">
+      Université Abbes Laghrou Khenchela — Construction Métallique — Master 1 Structure.
+      Prototype pédagogique gamifié combinant les modules Qwen et DeepSeek.
+    </footer>
+  </div>
+</div>
+
+<!-- MODALES -->
+<div class="modal" id="helpModal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <h3 id="helpTitle">Aide</h3>
+    <p>Ce module combine contenu pédagogique et gamification :</p>
+    <ol>
+      <li>Lire les concepts et définitions.</li>
+      <li>Observer les figures.</li>
+      <li>Utiliser les calculateurs pas à pas.</li>
+      <li>Répondre aux mini-quiz.</li>
+      <li>Affronter les boss (HP, vies, chrono).</li>
+      <li>Tenter le Speed Round pour réviser.</li>
+      <li>Consulter le tableau de maîtrise et les blueprints.</li>
+    </ol>
+    <p class="small muted">Raccourcis : <kbd>D</kbd> thème · <kbd>S</kbd> Speed · <kbd>B</kbd> Boss · <kbd>H</kbd> Dashboard · <kbd>?</kbd> aide · <kbd>Échap</kbd> fermer.</p>
+    <div class="modal-actions"><button onclick="closeHelp()">Fermer</button></div>
+  </div>
+</div>
+
+<div class="modal" id="bossModal" hidden>
+  <div class="boss-arena" id="boss-arena"></div>
+</div>
+
+<div class="modal" id="speedModal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true">
+    <div class="speed-header">
+      <h3 style="margin:0;color:var(--accent)">⚡ Round Éclair</h3>
+      <div class="speed-timer" id="speed-timer">30</div>
+    </div>
+    <div id="speed-body"></div>
+    <div id="speed-result"></div>
+  </div>
+</div>
+
+<div class="modal" id="avatarModal" hidden onclick="if(event.target===this)closeAvatar()">
+  <div class="avatar-card" id="avatar-card-content" role="dialog" aria-modal="true"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+/* ============================================================
+   STATE
+============================================================ */
+const EQ_LIST = [
+  { id:'EQ-1',  name:'Critère von Mises — soudure',  icon:'🔥' },
+  { id:'EQ-2',  name:'Cordons frontaux',             icon:'➡️' },
+  { id:'EQ-3',  name:'Cordons latéraux',             icon:'↗️' },
+  { id:'EQ-4',  name:'Assemblage sous V + M',        icon:'⟲' },
+  { id:'EQ-5',  name:'Traction transversale âme',    icon:'🏗️' },
+  { id:'EQ-6',  name:'Cisaillement âme',             icon:'✂️' },
+  { id:'EQ-7',  name:'Traction boulon',              icon:'🔩' },
+  { id:'EQ-8',  name:'Cisaillement boulon',          icon:'⚙️' },
+  { id:'EQ-9',  name:'Pression diamétrale',          icon:'⬤' },
+  { id:'EQ-10', name:'Interaction Fv + Ft',          icon:'⚖️' },
+  { id:'EQ-11', name:'Boulons HR précontraints',     icon:'🔒' }
+];
+
+const DEFAULT_STATE = {
+  theme:'light',
+  sections:{},
+  mastery:{},
+  masteryLast:{},
+  quizzes:{},
+  badges:{},
+  xp:0, level:1, gems:0, hints:3,
+  combo:0, maxCombo:0, streak:0,
+  soundOn:true,
+  bossesDefeated:{},
+  speedBest:0,
+  lastVisit:null,
+  questDate:null,
+  quests:[]
+};
+
+function loadState(){
+  const base = JSON.parse(JSON.stringify(DEFAULT_STATE));
+  try{
+    const raw = localStorage.getItem('asmModuleV3');
+    if(!raw) return base;
+    const saved = JSON.parse(raw);
+    return Object.assign(base, saved, {
+      sections:       Object.assign({}, base.sections,       saved.sections||{}),
+      mastery:        Object.assign({}, base.mastery,        saved.mastery||{}),
+      masteryLast:    Object.assign({}, base.masteryLast,    saved.masteryLast||{}),
+      quizzes:        Object.assign({}, base.quizzes,        saved.quizzes||{}),
+      badges:         Object.assign({}, base.badges,         saved.badges||{}),
+      bossesDefeated: Object.assign({}, base.bossesDefeated, saved.bossesDefeated||{})
+    });
+  }catch(e){ return base; }
+}
+function saveState(){ try{ localStorage.setItem('asmModuleV3', JSON.stringify(state)); }catch(e){} }
+
+let state = loadState();
+let brScale = 1.5;
+const $ = id => document.getElementById(id);
+function num(id){ const el=$(id); return el ? (parseFloat(el.value)||0) : 0; }
+function sel(id){ const el=$(id); return el ? el.value : ''; }
+
+/* ============================================================
+   THEME / SIDEBAR / HELP
+============================================================ */
+function applyTheme(){ document.documentElement.dataset.theme = state.theme; }
+function toggleTheme(){
+  state.theme = state.theme==='light' ? 'dark' : 'light';
+  applyTheme(); saveState();
+}
+function toggleSidebar(){ $('sidebar').classList.toggle('open'); }
+function openHelp(){ $('helpModal').hidden = false; }
+function closeHelp(){ $('helpModal').hidden = true; }
+function resetState(){
+  if(confirm('Réinitialiser toute la progression (XP, maîtrise, boss, etc.) ?')){
+    localStorage.removeItem('asmModuleV3');
+    location.reload();
+  }
+}
+
+/* ============================================================
+   HUD (XP / LEVEL / GEMS / COMBO)
+============================================================ */
+const AVATAR_TIERS = [
+  { lvl:1,  name:'Apprenti',  acc:'' },
+  { lvl:3,  name:'Soudeur',   acc:'helmet' },
+  { lvl:5,  name:'Ingénieur', acc:'badge' },
+  { lvl:8,  name:'Expert',    acc:'cape' },
+  { lvl:12, name:'Maître',    acc:'crown' },
+  { lvl:16, name:'Légende',   acc:'aura' }
+];
+function currentTier(){
+  let t = AVATAR_TIERS[0];
+  for(let i=0;i<AVATAR_TIERS.length;i++){
+    if(state.level >= AVATAR_TIERS[i].lvl) t = AVATAR_TIERS[i];
+  }
+  return t;
+}
+function avatarSVG(size){
+  const acc = currentTier().acc; let extra='';
+  if(['helmet','badge','cape','crown','aura'].indexOf(acc)!==-1) extra+='<path d="M 12 18 Q 20 8 28 18 L 28 22 L 12 22 Z" fill="#ca8a04"/>';
+  if(['badge','cape','crown','aura'].indexOf(acc)!==-1) extra+='<circle cx="20" cy="40" r="3" fill="#fbbf24" stroke="#92400e" stroke-width="1"/>';
+  if(['cape','crown','aura'].indexOf(acc)!==-1) extra+='<path d="M 10 28 L 6 44 L 34 44 L 30 28 Z" fill="#7f1d1d" opacity=".8"/>';
+  if(['crown','aura'].indexOf(acc)!==-1) extra+='<path d="M 12 12 L 14 8 L 17 12 L 20 6 L 23 12 L 26 8 L 28 12 Z" fill="#fbbf24" stroke="#92400e" stroke-width=".5"/>';
+  return '<svg viewBox="0 0 40 48" width="'+size+'" height="'+size+'">'+extra+
+    '<circle cx="20" cy="22" r="10" fill="#fcd34d" stroke="#92400e" stroke-width="1.5"/>'+
+    '<circle cx="17" cy="21" r="1.5" fill="#1f2937"/><circle cx="23" cy="21" r="1.5" fill="#1f2937"/>'+
+    '<path d="M 17 26 Q 20 28 23 26" stroke="#1f2937" stroke-width="1.5" fill="none" stroke-linecap="round"/>'+
+    '<rect x="14" y="32" width="12" height="14" rx="2" fill="#1e3a8a"/></svg>';
+}
+function renderHUD(){
+  const needed = state.level*100;
+  if($('hud-lvl'))   $('hud-lvl').textContent   = state.level;
+  if($('hud-gems'))  $('hud-gems').textContent  = state.gems;
+  if($('hud-hints')) $('hud-hints').textContent = state.hints;
+  if($('hud-xp'))    $('hud-xp').style.width    = Math.min(100, 100*state.xp/needed)+'%';
+  if($('hud-combo')) $('hud-combo').textContent = state.combo>=2 ? ('🔥 ×'+state.combo) : '';
+  if($('sb-lvl'))    $('sb-lvl').textContent    = state.level;
+  if($('sb-xp'))     $('sb-xp').textContent     = state.xp+'/'+needed;
+  if($('sb-gems'))   $('sb-gems').textContent   = state.gems;
+  if($('sb-hints'))  $('sb-hints').textContent  = state.hints;
+  if($('sb-combo'))  $('sb-combo').textContent  = state.combo;
+  if($('hud-sound')) $('hud-sound').textContent = state.soundOn ? '🔊' : '🔇';
+}
+
+function awardXP(amount){
+  const crit = Math.random()<0.2;
+  if(crit && amount>0){ amount*=2; showDamage('CRIT ×2','crit'); }
+  state.xp += amount;
+  let needed = state.level*100, up=false;
+  while(state.xp >= needed){
+    state.xp -= needed;
+    state.level = Math.min(state.level+1, 99);
+    needed = state.level*100;
+    up = true;
+  }
+  if(up) celebrateLevelUp();
+  saveState(); renderHUD();
+}
+function celebrateLevelUp(){
+  showToast('🎉 Niveau '+state.level+' atteint !', 'ok big');
+  confetti(80); playSound('levelup');
+}
+function awardGems(n){
+  state.gems += n; saveState(); renderHUD();
+  showToast('💎 +'+n, 'ok');
+}
+function funOnAnswer(correct, bonus){
+  if(correct){
+    state.combo++;
+    if(state.combo>state.maxCombo) state.maxCombo = state.combo;
+    const mult = 1 + Math.min(state.combo-1,4)*0.5;
+    const g = Math.round((bonus||10)*mult);
+    awardXP(g);
+    showDamage('+'+g+' XP', 'positive');
+    playSound('correct');
+    if(state.combo>=3){ showToast('🔥 Combo ×'+state.combo, 'ok'); confetti(20); }
+  } else {
+    if(state.combo>=3) showToast('💥 Combo brisé','bad');
+    state.combo = 0;
+    playSound('wrong');
+  }
+  saveState(); renderHUD(); checkQuests();
+}
+
+/* ============================================================
+   MASTERY / DASHBOARD / BLUEPRINTS / BADGES / JOURNEY / QUESTS
+============================================================ */
+function addEq(id, inc){
+  const cur = state.mastery[id]||0;
+  state.mastery[id] = Math.min(100, Math.round(cur+inc));
+  state.masteryLast[id] = Date.now();
+  saveState();
+  renderMasteryTable(); renderDashboard(); renderBlueprints(); renderJourney(); renderBadges();
+  checkQuests();
+}
+function masteryScore(id){
+  const v = state.mastery[id]||0;
+  const last = state.masteryLast[id];
+  if(!last) return v;
+  const days = (Date.now()-last)/86400000;
+  const decay = Math.max(0, Math.min(1, 1 - (days-1)/14));
+  return Math.round(v*decay);
+}
+function renderMasteryTable(){
+  const tbody = $('masteryBody'); if(!tbody) return;
+  let total=0;
+  tbody.innerHTML = EQ_LIST.map(function(eq){
+    const val = masteryScore(eq.id); total += val;
+    return '<tr>'+
+      '<td><strong>'+eq.id+'</strong></td>'+
+      '<td>'+eq.name+'</td>'+
+      '<td><div class="meter"><span style="width:'+val+'%"></span></div></td>'+
+      '<td>'+val+'%</td>'+
+      '<td>'+(val>=80?'<span class="ok">✔</span>':'—')+'</td>'+
+    '</tr>';
+  }).join('');
+  const avg = Math.round(total / EQ_LIST.length);
+  if($('headerProgress'))     $('headerProgress').value = avg;
+  if($('headerProgressText')) $('headerProgressText').textContent = avg+'%';
+}
+function renderDashboard(){
+  const list = $('mastery-list'); if(!list) return;
+  list.innerHTML = EQ_LIST.map(function(eq){
+    const m = masteryScore(eq.id);
+    const color = m>=80?'var(--ok)':m>=50?'var(--gold)':m>0?'var(--bad)':'var(--muted)';
+    return '<div class="mastery-item" onclick="location.hash=\'#card-'+eq.id+'\'">'+
+      '<div class="mi-title">'+eq.icon+' '+eq.name+'</div>'+
+      '<div class="mi-bar"><div style="width:'+m+'%;background:'+color+'"></div></div>'+
+      '<div class="mi-meta"><span>'+m+'%</span><span>'+(m>=80?'✓':m>=50?'◐':m>0?'!':'·')+'</span></div>'+
+    '</div>';
+  }).join('');
+
+  const due = EQ_LIST.filter(function(eq){
+    const last = state.masteryLast[eq.id];
+    if(!last) return true;
+    return (Date.now()-last)/86400000 > 7;
+  });
+  const dueEl = $('due-items');
+  if(dueEl){
+    if(due.length===0){
+      dueEl.innerHTML = '<span style="color:var(--ok);font-weight:700">✅ Tout est à jour !</span>';
+    } else {
+      dueEl.innerHTML = '<div style="font-weight:700;margin-bottom:.5rem">🔔 À réviser ('+due.length+')</div>'+
+        due.map(function(eq){ return '<a href="#card-'+eq.id+'" class="due-chip">↻ '+eq.name+'</a>'; }).join('');
+    }
+  }
+
+  let rec = null, lowest = 101;
+  EQ_LIST.forEach(function(eq){
+    const m = masteryScore(eq.id);
+    if((state.mastery[eq.id]||0)===0 && rec===null) rec = eq;
+    else if((state.mastery[eq.id]||0)>0 && m<lowest){ lowest=m; rec=eq; }
+  });
+  if(!rec) rec = EQ_LIST[0];
+  const rm = masteryScore(rec.id);
+  const mastered = EQ_LIST.filter(function(eq){ return masteryScore(eq.id)>=80; }).length;
+  let html;
+  if(rm===0)      html = '<h5>🎯 Commencer ici</h5><div class="rec-title">'+rec.icon+' '+rec.name+'</div><div class="rec-desc">Nouveau concept.</div><a href="#card-'+rec.id+'" style="display:inline-block;padding:.5rem 1rem;background:var(--accent);color:#fff;text-decoration:none;border-radius:8px;font-weight:700">Commencer →</a>';
+  else if(rm<50)  html = '<h5>🎯 Prioritaire</h5><div class="rec-title">'+rec.icon+' '+rec.name+'</div><div class="rec-desc">Score : '+rm+'%.</div><a href="#card-'+rec.id+'" style="display:inline-block;padding:.5rem 1rem;background:var(--accent);color:#fff;text-decoration:none;border-radius:8px;font-weight:700">Réviser →</a>';
+  else if(rm<80)  html = '<h5>📈 Objectif</h5><div class="rec-title">'+rec.icon+' '+rec.name+'</div><div class="rec-desc">Score : '+rm+'%.</div><a href="#card-'+rec.id+'" style="display:inline-block;padding:.5rem 1rem;background:var(--accent);color:#fff;text-decoration:none;border-radius:8px;font-weight:700">Continuer →</a>';
+  else            html = '<h5>🏆 Félicitations</h5><div class="rec-title">'+mastered+' / '+EQ_LIST.length+' maîtrisés</div>';
+  if($('recommend-card')) $('recommend-card').innerHTML = '<div class="recommend">'+html+'</div>';
+}
+function renderBlueprints(){
+  const grid = $('bp-grid'); if(!grid) return;
+  let count=0;
+  grid.innerHTML = EQ_LIST.map(function(eq){
+    const unlocked = masteryScore(eq.id)>=80; if(unlocked) count++;
+    return '<div class="bp-card '+(unlocked?'':'locked')+'" onclick="flipBP(this)">'+
+      '<div class="bp-inner">'+
+        '<div class="bp-front">'+
+          '<div class="bp-icon">'+eq.icon+'</div>'+
+          '<div class="bp-title">'+eq.name+'</div>'+
+        '</div>'+
+        '<div class="bp-back">'+
+          '<div class="bp-back-title">'+eq.icon+' '+eq.id+'</div>'+
+          '<div>'+eq.name+'</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+  if($('bp-count')) $('bp-count').textContent = count;
+}
+function flipBP(card){
+  if(card.classList.contains('locked')){ showToast('🔒 Maîtrisez ce concept (≥80 %)','bad'); return; }
+  card.classList.toggle('flipped');
+  playSound('correct');
+}
+function renderBadges(){
+  const el = $('achievements'); if(!el) return;
+  const mastered = EQ_LIST.filter(function(e){ return masteryScore(e.id)>=80; }).length;
+  const bosses   = Object.keys(state.bossesDefeated).length;
+  const BADGES = [
+    { icon:'🎯', name:'Premier pas',   desc:'1 quiz',      cond:Object.keys(state.quizzes).length>=1 },
+    { icon:'📚', name:'Studieux',      desc:'5 ≥ 50%',     cond:EQ_LIST.filter(function(e){ return masteryScore(e.id)>=50; }).length>=5 },
+    { icon:'✨', name:'Bon début',     desc:'3 maîtrisés', cond:mastered>=3 },
+    { icon:'🔥', name:'Assidu',        desc:'6 maîtrisés', cond:mastered>=6 },
+    { icon:'⚔️', name:'Vainqueur',     desc:'1 boss',      cond:bosses>=1 },
+    { icon:'🗡️', name:'Champion',      desc:'2 boss',      cond:bosses>=2 },
+    { icon:'👑', name:'Roi',           desc:'3 boss',      cond:bosses>=3 },
+    { icon:'💎', name:'Collectionneur',desc:'50 💎',       cond:state.gems>=50 },
+    { icon:'🏆', name:'Expert',        desc:'Tout',        cond:mastered===EQ_LIST.length && bosses===3 }
+  ];
+  el.innerHTML = BADGES.map(function(b){
+    return '<div class="ach-badge '+(b.cond?'unlocked':'')+'"><div class="icon">'+b.icon+'</div><div class="name">'+b.name+'</div><div class="desc">'+b.desc+'</div></div>';
+  }).join('');
+}
+function renderJourney(){
+  const svg = $('journey-svg'); if(!svg) return;
+  const mc = EQ_LIST.filter(function(e){ return masteryScore(e.id)>=80; }).length;
+  const positions = [
+    {x:50,y:70},{x:150,y:40},{x:250,y:70},{x:350,y:100},{x:450,y:70},{x:550,y:40},
+    {x:650,y:70},{x:750,y:100},{x:850,y:70},{x:950,y:40},{x:1050,y:70}
+  ];
+  let cur = -1;
+  for(let i=0;i<EQ_LIST.length;i++){ if(masteryScore(EQ_LIST[i].id)<80){ cur=i; break; } }
+  if(cur===-1) cur = EQ_LIST.length-1;
+  let html='';
+  EQ_LIST.forEach(function(eq,i){
+    const m = masteryScore(eq.id); const p = positions[i]||{x:50+i*90,y:70};
+    const cls = m>=80?'mastered':i===cur?'current':'locked';
+    html += '<g class="node '+cls+'" onclick="location.hash=\'#card-'+eq.id+'\'">'+
+      '<circle cx="'+p.x+'" cy="'+p.y+'" r="16"/>'+
+      '<text x="'+p.x+'" y="'+p.y+'">'+(m>=80?'✓':(i+1))+'</text>'+
+      '<text class="node-label" x="'+p.x+'" y="'+(p.y+28)+'">'+eq.id+'</text>'+
+    '</g>';
+  });
+  svg.innerHTML = '<defs><linearGradient id="journeyGrad" x1="0" y1="0" x2="1" y2="0">'+
+      '<stop offset="0%" stop-color="#fbbf24"/><stop offset="50%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#22c55e"/>'+
+    '</linearGradient></defs>'+
+    '<path class="path-base" d="M 50,70 Q 150,10 250,70 T 450,70 T 650,70 T 850,70 T 1050,70" stroke="#d8e1f0" stroke-width="4" fill="none" stroke-dasharray="8 6"/>'+
+    '<path class="path-progress" d="M 50,70 Q 150,10 250,70 T 450,70 T 650,70 T 850,70 T 1050,70" stroke="url(#journeyGrad)" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="1100" stroke-dashoffset="'+(1100-1100*mc/EQ_LIST.length)+'"/>'+
+    html;
+}
+
+function getQuests(){
+  const today = new Date().toDateString();
+  if(state.questDate===today && state.quests.length) return state.quests;
+  const pool = [
+    { id:'quiz3',   text:'Répondre à 3 quiz',          target:3, reward:10, type:'quiz' },
+    { id:'master1', text:'Maîtriser 1 concept',        target:1, reward:20, type:'mastery' },
+    { id:'combo3',  text:'Atteindre un combo ×3',      target:3, reward:15, type:'combo' },
+    { id:'boss1',   text:'Vaincre un boss',            target:1, reward:25, type:'boss' },
+    { id:'speed5',  text:'5 bonnes réponses Speed',    target:5, reward:15, type:'speed' }
+  ];
+  const selQ=[]; const used={};
+  while(selQ.length<3){
+    const p = pool[Math.floor(Math.random()*pool.length)];
+    if(used[p.id]) continue;
+    used[p.id]=true;
+    selQ.push({ id:p.id, text:p.text, target:p.target, reward:p.reward, type:p.type, progress:0, done:false });
+  }
+  state.questDate = today;
+  state.quests = selQ;
+  saveState();
+  return selQ;
+}
+function renderQuests(){
+  const el = $('quests-list'); if(!el) return;
+  const qs = getQuests();
+  el.innerHTML = qs.map(function(q){
+    return '<div class="quest-item '+(q.done?'done':'')+'">'+
+      '<div class="q-check">'+(q.done?'✓':'')+'</div>'+
+      '<div class="q-text">'+q.text+' ('+q.progress+'/'+q.target+')</div>'+
+      '<div class="q-reward">💎 '+q.reward+'</div>'+
+    '</div>';
+  }).join('');
+}
+function bumpQuest(type){
+  const qs = getQuests();
+  qs.forEach(function(q){
+    if(q.done) return;
+    if(q.type===type) q.progress = Math.min(q.target, (q.progress||0)+1);
+  });
+  saveState();
+  checkQuests();
+  renderQuests();
+}
+function checkQuests(){
+  const qs = getQuests(); let changed=false;
+  qs.forEach(function(q){
+    if(q.done) return;
+    if(q.type==='combo' && state.combo>=q.target) q.progress=q.target;
+    if(q.type==='boss' && Object.keys(state.bossesDefeated).length>=q.target) q.progress=q.target;
+    if(q.type==='mastery'){
+      const m = EQ_LIST.filter(function(e){ return masteryScore(e.id)>=80; }).length;
+      if(m>=q.target) q.progress=q.target;
+    }
+    if(q.progress>=q.target){
+      q.done=true;
+      awardGems(q.reward);
+      showToast('🎯 Quête réussie : '+q.text, 'ok big');
+      changed=true;
+    }
+  });
+  if(changed) saveState();
+  renderQuests();
+}
+
+/* ============================================================
+   SOUND / TOAST / DMG / CONFETTI
+============================================================ */
+let _audioCtx=null;
+function playSound(type){
+  if(!state.soundOn) return;
+  try{
+    if(!_audioCtx) _audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    const osc = _audioCtx.createOscillator(), gain = _audioCtx.createGain();
+    osc.connect(gain); gain.connect(_audioCtx.destination);
+    const freqs = { correct:660, wrong:200, combo:880, levelup:1040, speed:1320, boss:440, victory:1200, defeat:150 };
+    osc.frequency.value = freqs[type]||440;
+    osc.type='sine';
+    gain.gain.setValueAtTime(0.08, _audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, _audioCtx.currentTime+0.2);
+    osc.start(_audioCtx.currentTime);
+    osc.stop(_audioCtx.currentTime+0.2);
+  }catch(e){}
+}
+function toggleSound(){ state.soundOn=!state.soundOn; saveState(); renderHUD(); if(state.soundOn) playSound('correct'); }
+
+let toastTimer=null;
+function showToast(msg, type){
+  const t = $('toast'); if(!t) return;
+  t.textContent = msg;
+  t.className = 'toast show '+(type||'');
+  if(toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2800);
+}
+function showDamage(text, type){
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const el = document.createElement('div');
+  el.className = 'dmg-float '+type;
+  el.textContent = text;
+  el.style.left = (window.innerWidth/2 + (Math.random()-0.5)*200)+'px';
+  el.style.top  = (window.innerHeight/2 + (Math.random()-0.5)*100)+'px';
+  document.body.appendChild(el);
+  setTimeout(function(){ el.remove(); }, 1400);
+}
+function confetti(count){
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const isMobile = window.innerWidth<768;
+  count = Math.min(count||60, isMobile?40:120);
+  const colors = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899','#fbbf24'];
+  for(let i=0;i<count;i++){
+    const c = document.createElement('div');
+    c.className = 'confetti-piece';
+    c.style.left = (Math.random()*100)+'vw';
+    c.style.background = colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDuration = (1.5+Math.random()*1.5)+'s';
+    c.style.animationDelay = (Math.random()*0.3)+'s';
+    const sz = 6+Math.random()*8;
+    c.style.width = sz+'px'; c.style.height = sz+'px';
+    if(Math.random()>0.5) c.style.borderRadius='50%';
+    document.body.appendChild(c);
+    setTimeout(function(){ c.remove(); }, 3500);
+  }
+}
+
+/* ============================================================
+   SECTIONS
+============================================================ */
+function markSection(key){
+  state.sections[key]=true;
+  updateParcours();
+  saveState();
+}
+function updateParcours(){
+  ['intro','weld','column','bolt','hr','fiab','recap'].forEach(function(k){
+    const el = $('status-'+k);
+    if(!el) return;
+    el.textContent = state.sections[k]?'✔ Terminé':'À faire';
+    el.classList.toggle('ok', Boolean(state.sections[k]));
+  });
+}
+
+/* ============================================================
+   CALCULATEURS EQ-1 à EQ-11
+============================================================ */
+const WELD = { S235:{beta:0.80,limit:288}, S355:{beta:0.90,limit:410} };
+function weldLimits(n){
+  const w = WELD[n]||WELD.S235;
+  return { beta:w.beta, limit:w.limit,
+           frontal: w.limit/(2*w.beta),
+           lateral: w.limit/(Math.sqrt(3)*w.beta) };
+}
+function resultOK(ok){ return ok?'<span class="ok">✔ Vérifié</span>':'<span class="bad">✘ Non vérifié</span>'; }
+function stepsHTML(steps){ return '<ol>'+steps.map(function(s){ return '<li>'+s+'</li>'; }).join('')+'</ol>'; }
+
+function calcEQ1(){
+  const s=num('w1_sigma'), t1=num('w1_tau1'), t2=num('w1_tau2');
+  const w = weldLimits(sel('w1_nuance'));
+  const demand = w.beta*Math.sqrt(s*s+3*(t1*t1+t2*t2));
+  const ratio = demand/w.limit, ok = demand<=w.limit;
+  $('eq1_result').innerHTML = 'Demande = '+demand.toFixed(1)+' MPa / Capacité = '+w.limit.toFixed(1)+' MPa — '+resultOK(ok)+' (ratio '+ratio.toFixed(2)+')';
+  $('eq1_steps').innerHTML = stepsHTML([
+    'β_w = '+w.beta.toFixed(2)+' ; résistance = '+w.limit.toFixed(1)+' MPa.',
+    'Demande = β_w·√(σ²+3(τ₁²+τ₂²)) = '+demand.toFixed(1)+' MPa.',
+    ok?'La soudure est suffisante.':'Augmenter la gorge ou la longueur.'
+  ]);
+  addEq('EQ-1', 30); funOnAnswer(ok, 10);
+}
+function calcEQ2(){
+  const N=num('w2_N')*1000, lc=num('w2_lc'), nb=Math.max(1,num('w2_nb'));
+  const lim = weldLimits(sel('w2_nuance'));
+  if(lc<=0){ $('eq2_result').innerHTML='<span class="warn">l_c > 0 requis</span>'; return; }
+  const per = N/nb;
+  const a = per*Math.SQRT2/(2*lc*lim.frontal);
+  $('eq2_result').innerHTML = 'Gorge minimale : <strong>'+a.toFixed(2)+' mm</strong>';
+  $('eq2_steps').innerHTML = stepsHTML([
+    'N/nb = '+per.toFixed(0)+' N.',
+    'Contrainte frontale limite ≈ '+lim.frontal.toFixed(1)+' MPa.',
+    'a = '+a.toFixed(2)+' mm.'
+  ]);
+  addEq('EQ-2',30); funOnAnswer(true,10);
+}
+function calcEQ3(){
+  const N=num('w3_N')*1000, lc=num('w3_lc'), nb=Math.max(1,num('w3_nb'));
+  const lim = weldLimits(sel('w3_nuance'));
+  if(lc<=0){ $('eq3_result').innerHTML='<span class="warn">l_c > 0 requis</span>'; return; }
+  const per = N/nb;
+  const a = per/(lc*lim.lateral);
+  $('eq3_result').innerHTML = 'Gorge minimale : <strong>'+a.toFixed(2)+' mm</strong>';
+  $('eq3_steps').innerHTML = stepsHTML([
+    'N/nb = '+per.toFixed(0)+' N.',
+    'Contrainte latérale limite ≈ '+lim.lateral.toFixed(1)+' MPa.',
+    'a = '+a.toFixed(2)+' mm.'
+  ]);
+  addEq('EQ-3',30); funOnAnswer(true,10);
+}
+function calcEQ4(){
+  const V=num('w4_V')*1000, M=num('w4_M')*1e6, lc=num('w4_lc'), a=num('w4_a');
+  const w = weldLimits(sel('w4_nuance'));
+  if(lc<=0||a<=0){ $('eq4_result').innerHTML='<span class="warn">lc>0 et a>0 requis</span>'; return; }
+  const sigma = 3*M/(a*lc*lc*Math.SQRT2);
+  const tau1  = V*Math.sqrt(3)/(2*a*lc);
+  const demand = w.beta*Math.sqrt(sigma*sigma+3*tau1*tau1);
+  const ok = demand<=w.limit;
+  $('eq4_result').innerHTML = 'σ = '+sigma.toFixed(1)+' MPa ; τ₁ = '+tau1.toFixed(1)+' MPa — Demande '+demand.toFixed(1)+' / Capacité '+w.limit.toFixed(1)+' MPa — '+resultOK(ok);
+  $('eq4_steps').innerHTML = stepsHTML([
+    'σ = '+sigma.toFixed(2)+' MPa.',
+    'τ₁ = '+tau1.toFixed(2)+' MPa.',
+    'Demande = '+demand.toFixed(2)+' MPa.'
+  ]);
+  addEq('EQ-4',30); funOnAnswer(ok,10);
+}
+function calcEQ5(){
+  const twc=num('c5_twc'), tfc=num('c5_tfc'), tfb=num('c5_tfb'), rc=num('c5_rc'), Ry=num('c5_Ry'), Ft=num('c5_Ft');
+  const bwf = tfb + 5*(tfc+rc);
+  const FtR = twc*bwf*Ry/1000;
+  const ok = Ft<=FtR;
+  $('eq5_result').innerHTML = 'b_wf = '+bwf.toFixed(1)+' mm ; F_t,R = '+FtR.toFixed(1)+' kN — '+resultOK(ok);
+  $('eq5_steps').innerHTML = stepsHTML([
+    'b_wf = '+bwf.toFixed(2)+' mm.',
+    'F_t,R = '+FtR.toFixed(2)+' kN.',
+    'F_t agissant = '+Ft.toFixed(2)+' kN.'
+  ]);
+  addEq('EQ-5',30); funOnAnswer(ok,10);
+}
+function calcEQ6(){
+  const A=num('c6_A')*100, b=num('c6_b'), tf=num('c6_tf'), tw=num('c6_tw'), r=num('c6_r'), Ry=num('c6_Ry'), V=num('c6_V');
+  const Av = A - 2*b*tf + (tw+2*r)*tf;
+  if(Av<=0){ $('eq6_result').innerHTML='<span class="warn">Dimensions incohérentes</span>'; return; }
+  const Vpl = 0.58*Av*Ry/1000;
+  const ok = V<=Vpl;
+  $('eq6_result').innerHTML = 'A_v = '+Av.toFixed(0)+' mm² ; V_pl = '+Vpl.toFixed(1)+' kN — '+resultOK(ok);
+  $('eq6_steps').innerHTML = stepsHTML([
+    'A = '+A.toFixed(0)+' mm².',
+    'A_v = '+Av.toFixed(0)+' mm².',
+    'V_pl = '+Vpl.toFixed(2)+' kN.',
+    'V = '+V.toFixed(2)+' kN.'
+  ]);
+  addEq('EQ-6',30); funOnAnswer(ok,10);
+}
+const BOLT_AS = { M16:157, M20:245, M24:353, M30:561 };
+const HR_AS   = { M16:157, M20:245, M24:353 };
+const CLASS_FUB = { '4.6':400, '8.8':800, '10.9':1000 };
+const GAMMA_M2  = 1.25;
+const GAMMA_MS  = 1.25;
+function calcEQ7(){
+  const As = BOLT_AS[sel('b7_bolt')]||0;
+  const fub = CLASS_FUB[sel('b7_class')]||0;
+  const k2 = parseFloat(sel('b7_k2'));
+  const FtRd = k2*fub*As/GAMMA_M2/1000;
+  $('eq7_result').innerHTML = 'F_t,Rd = <strong>'+FtRd.toFixed(1)+' kN</strong> par boulon.';
+  $('eq7_steps').innerHTML = stepsHTML(['A_s = '+As+' mm²','f_ub = '+fub+' MPa','k₂ = '+k2,'F_t,Rd = '+FtRd.toFixed(2)+' kN']);
+  addEq('EQ-7',30); funOnAnswer(true,10);
+}
+function calcEQ8(){
+  const As = BOLT_AS[sel('b8_bolt')]||0;
+  const fub = CLASS_FUB[sel('b8_class')]||0;
+  const plans = parseInt(sel('b8_plans'),10);
+  const nb = Math.max(1, num('b8_nb'));
+  const alpha = sel('b8_class')==='10.9' ? 0.5 : 0.6;
+  const perPlan = alpha*fub*As/GAMMA_M2/1000;
+  const perBolt = perPlan*plans;
+  const group   = perBolt*nb;
+  $('eq8_result').innerHTML = 'Plan : <strong>'+perPlan.toFixed(1)+' kN</strong> ; Boulon : <strong>'+perBolt.toFixed(1)+' kN</strong> ; Groupe : <strong>'+group.toFixed(1)+' kN</strong>';
+  $('eq8_steps').innerHTML = stepsHTML(['α_v = '+alpha,'Par plan = '+perPlan.toFixed(2)+' kN','Plans = '+plans,'Boulons = '+nb]);
+  addEq('EQ-8',30); funOnAnswer(true,10);
+}
+function syncBr(name){
+  const el = $('br_'+name), out = $('br_'+name+'_out');
+  if(el&&out) out.value = el.value+' mm';
+  calcBearing();
+}
+function setCircle(id,cx,cy,d0){
+  const el = $(id); if(!el) return;
+  el.setAttribute('cx',cx); el.setAttribute('cy',cy);
+  el.setAttribute('r', d0*brScale/2);
+}
+function setLine(id,x1,y1,x2,y2){
+  const el = $(id); if(!el) return;
+  el.setAttribute('x1',x1); el.setAttribute('y1',y1);
+  el.setAttribute('x2',x2); el.setAttribute('y2',y2);
+}
+function setText(id,x,y,txt){
+  const el = $(id); if(!el) return;
+  el.setAttribute('x',x); el.setAttribute('y',y); el.textContent = txt;
+}
+function updateBearingFigure(e1,p1,e2,p2,d0){
+  const margin=55;
+  const width  = (2*e2+p2)*brScale;
+  const height = (2*e1+p1)*brScale;
+  const totalW = width + 2*margin + 80;
+  const totalH = height + 2*margin + 40;
+  const svg = $('bearingSvg'); if(!svg) return;
+  svg.setAttribute('viewBox', '0 0 '+totalW+' '+totalH);
+  const plate = $('brPlate');
+  if(plate){
+    plate.setAttribute('x',margin); plate.setAttribute('y',margin);
+    plate.setAttribute('width',width); plate.setAttribute('height',height);
+  }
+
+  const cx1 = margin + e2*brScale;
+  const cy1 = margin + e1*brScale;
+  const cx2 = margin + (e2+p2)*brScale;
+  const cy2 = margin + (e1+p1)*brScale;
+
+  setCircle('hole1',cx1,cy1,d0); setCircle('hole2',cx2,cy1,d0);
+  setCircle('hole3',cx1,cy2,d0); setCircle('hole4',cx2,cy2,d0);
+
+  const bz = $('bearingZone');
+  if(bz){
+    bz.setAttribute('cx',cx1); bz.setAttribute('cy',cy1);
+    bz.setAttribute('r', d0*brScale/2 + 7);
+  }
+  setLine('dimE1',margin+14,margin,margin+14,cy1);
+  setText('labelE1',8,(margin+cy1)/2,'e₁='+e1);
+  setLine('dimP1',margin-22,cy1,margin-22,cy2);
+  setText('labelP1',5,(cy1+cy2)/2,'p₁='+p1);
+  setLine('dimE2',margin,margin+14,cx1,margin+14);
+  setText('labelE2',(margin+cx1)/2,margin-8,'e₂='+e2);
+  setLine('dimP2',cx1,margin-22,cx2,margin-22);
+  setText('labelP2',(cx1+cx2)/2,margin-28,'p₂='+p2);
+  setText('loadText', totalW-56, margin+height/2, 'V ↓');
+}
+function calcBearing(){
+  const e1=num('br_e1'), p1=num('br_p1'), e2=num('br_e2'), p2=num('br_p2');
+  const d=num('br_d'), d0=num('br_d0'), t=num('br_t'), fu=num('br_fu'), fub=num('br_fub');
+  if([e1,p1,e2,p2,d,d0,t,fu,fub].some(function(v){ return v<=0; })){
+    if($('br_result')) $('br_result').innerHTML = '<span class="warn">Valeurs positives requises.</span>';
+    return;
+  }
+  const alphaTerms = [
+    { label:'e₁/(3d₀)',        value:e1/(3*d0) },
+    { label:'p₁/(3d₀)-0,25',  value:p1/(3*d0)-0.25 },
+    { label:'f_ub/f_u',        value:fub/fu },
+    { label:'1',               value:1 }
+  ];
+  const kTerms = [
+    { label:'2,8e₂/d₀-1,7', value:2.8*e2/d0-1.7 },
+    { label:'1,4p₂/d₀-1,7', value:1.4*p2/d0-1.7 },
+    { label:'2,5',          value:2.5 }
+  ];
+  const alpha = alphaTerms.reduce(function(m,x){ return x.value<m.value?x:m; });
+  const k1    = kTerms.reduce(function(m,x){ return x.value<m.value?x:m; });
+  const FbRd = k1.value*alpha.value*fu*d*t/GAMMA_M2/1000;
+  if($('br_alpha')) $('br_alpha').innerHTML = alphaTerms.map(function(x){ return '<span class="pill '+(x===alpha?'ok':'')+'">'+x.label+' = '+x.value.toFixed(3)+'</span>'; }).join('');
+  if($('br_k1'))    $('br_k1').innerHTML    = kTerms.map(function(x){ return '<span class="pill '+(x===k1?'ok':'')+'">'+x.label+' = '+x.value.toFixed(3)+'</span>'; }).join('');
+  if($('br_result')) $('br_result').innerHTML = 'F_b,Rd = <strong>'+FbRd.toFixed(1)+' kN</strong> — α_b = '+alpha.label+', k₁ = '+k1.label;
+  const warn = [];
+  if(e1<1.2*d0) warn.push('e₁<1,2d₀');
+  if(e2<1.2*d0) warn.push('e₂<1,2d₀');
+  if(p1<2.2*d0) warn.push('p₁<2,2d₀');
+  if(p2<2.2*d0) warn.push('p₂<2,2d₀');
+  if($('br_warning')) $('br_warning').innerHTML = warn.length
+    ? '<span class="warn">⚠ '+warn.join(', ')+'</span>'
+    : '<span class="ok">✔ Géométrie cohérente</span>';
+  updateBearingFigure(e1,p1,e2,p2,d0);
+  drawBearingPlan(); drawBearingSection(); updateLegendValues();
+  addEq('EQ-9', 20);
+}
+function calcEQ10(){
+  const FvEd=num('b10_FvEd'), FvRd=num('b10_FvRd'), FtEd=num('b10_FtEd'), FtRd=num('b10_FtRd');
+  if(FvRd<=0||FtRd<=0){ $('eq10_result').innerHTML='<span class="warn">F_Rd > 0 requis</span>'; return; }
+  const t1=FvEd/FvRd, t2=FtEd/(1.4*FtRd), tot=t1+t2, ok=tot<=1;
+  $('eq10_result').innerHTML = 'Cisaillement = '+t1.toFixed(3)+' ; Traction = '+t2.toFixed(3)+' ; Total = '+tot.toFixed(3)+' — '+resultOK(ok);
+  $('eq10_steps').innerHTML = stepsHTML(['Fv/Fv,Rd = '+t1.toFixed(4),'Ft/(1,4Ft,Rd) = '+t2.toFixed(4),'Somme = '+tot.toFixed(4)]);
+  addEq('EQ-10',30); funOnAnswer(ok,10);
+}
+function calcEQ11(){
+  const As = HR_AS[sel('h11_bolt')]||0;
+  const fub = CLASS_FUB[sel('h11_class')]||0;
+  const Ks = parseFloat(sel('h11_ks'));
+  const ns = parseInt(sel('h11_plans'),10);
+  const mu = parseFloat(sel('h11_mu'));
+  const Fp = 0.7*As*fub/1000;
+  const Fs = Ks*ns*mu*Fp/GAMMA_MS;
+  $('eq11_result').innerHTML = 'F_p = <strong>'+Fp.toFixed(1)+' kN</strong> ; F_s = <strong>'+Fs.toFixed(1)+' kN</strong>';
+  $('eq11_steps').innerHTML = stepsHTML(['F_p = '+Fp.toFixed(2)+' kN','K_s='+Ks+', n_s='+ns+', μ='+mu,'F_s = '+Fs.toFixed(2)+' kN']);
+  addEq('EQ-11',30); funOnAnswer(true,10);
+}
+
+/* ============================================================
+   CALCUL β
+============================================================ */
+function normCdf(x){
+  const t=1/(1+0.2316419*Math.abs(x));
+  const d=0.3989423*Math.exp(-x*x/2);
+  let p=d*t*(0.3193815+t*(-0.3565638+t*(1.781478+t*(-1.821256+t*1.330274))));
+  return x>0?1-p:p;
+}
+function calcBeta(){
+  const muR=num('beta_muR'), sdR=num('beta_sdR'), muE=num('beta_muE'), sdE=num('beta_sdE');
+  if(sdR<=0||sdE<=0){ $('beta_result').innerHTML='<span class="warn">σ > 0 requis</span>'; return; }
+  const mug = muR-muE, sdg = Math.sqrt(sdR*sdR+sdE*sdE);
+  const beta = mug/sdg, pf = normCdf(-beta);
+  $('beta_result').innerHTML = 'β = <strong>'+beta.toFixed(2)+'</strong> ; P_f ≈ <strong>'+pf.toExponential(3)+'</strong>';
+  $('beta_steps').innerHTML = stepsHTML(['μ_g = '+mug.toFixed(2)+' kN','σ_g = '+sdg.toFixed(2)+' kN','β = '+beta.toFixed(3),'P_f ≈ '+pf.toExponential(3)]);
+}
+
+/* ============================================================
+   QUIZ
+============================================================ */
+function initQuizzes(){
+  document.querySelectorAll('.quiz').forEach(function(quiz){
+    const btn = quiz.querySelector('.quiz-check'); if(!btn) return;
+    btn.addEventListener('click', function(){
+      const name = quiz.dataset.name;
+      const chosen = quiz.querySelector('input[name="'+name+'"]:checked');
+      const fb = quiz.querySelector('.feedback');
+      if(!chosen){ fb.innerHTML = '<span class="warn">Choisir une réponse.</span>'; return; }
+      const correct = quiz.dataset.correct;
+      const explain = quiz.dataset.explain||'';
+      if(chosen.value===correct){
+        fb.innerHTML = '<span class="ok">✔ Bonne réponse.</span> '+explain;
+        addEq(quiz.dataset.eq, 50);
+        state.quizzes[name] = true;
+        saveState();
+        funOnAnswer(true, 15);
+        bumpQuest('quiz');
+      } else {
+        fb.innerHTML = '<span class="bad">✘ Pas encore.</span> '+explain;
+        funOnAnswer(false, 0);
+      }
+    });
+  });
+}
+
+/* ============================================================
+   BOSS DATA
+============================================================ */
+const BOSS_DATA = {
+  weld: {
+    name:'Le Maître des Soudures', portrait:'🔥', reward:10,
+    questions: [
+      { q:"β_w pour un acier S235 ?", o:['0,80','0,85','0,90'], c:0, e:"β_w = 0,80 pour S235 (0,90 pour S355)." },
+      { q:"Critère de soudure d'angle ?", o:['σ ≤ Re','β_w·√(σ²+3(τ₁²+τ₂²)) ≤ R_w/γ_mw','τ ≤ Re'], c:1, e:"C'est le critère de von Mises adapté aux cordons d'angle (EQ-1)." },
+      { q:"Pour un cordon frontal, σ = τ₂ = ?", o:['N/(a·l_c)','N·√2/(2·a·l_c)','2N/(a·l_c)'], c:1, e:"Formule EQ-2." },
+      { q:"La gorge a est :", o:['La largeur visible',"La section efficace de calcul","L'épaisseur de la tôle"], c:1, e:"La gorge est l'épaisseur fictive utilisée dans le calcul." }
+    ]
+  },
+  column: {
+    name:"Le Seigneur de l'Âme", portrait:'👹', reward:15,
+    questions: [
+      { q:"b_wf (profilé laminé) = ?", o:['t_fb + 5(t_fc + r_c)','t_fb + 2(t_fc + r_c)','t_fb + r_c'], c:0, e:"Formule EQ-5 pour la traction transversale." },
+      { q:"V_pl = ?", o:['0,58·A_v·R_y/γ_M0','0,5·A·R_y','1,5·A_v·R_y'], c:0, e:"Formule EQ-6." },
+      { q:"Dans A_v, il faut :", o:['Mélanger cm² et mm sans conversion','Convertir A en mm²','Ignorer les congés'], c:1, e:"L'homogénéité est essentielle." },
+      { q:"Traction transversale : critère ?", o:['F_t ≤ t_wc·b_wf·R_y/γ_M0','F_t ≥ t_wc·b_wf·R_y/γ_M0','F_t = 0'], c:0, e:"Vérification de la traction transversale." }
+    ]
+  },
+  bolt: {
+    name:'Le Titan des Boulons', portrait:'🐲', reward:25,
+    questions: [
+      { q:"k₂ (tête ordinaire) = ?", o:['0,6','0,9','1,0'], c:1, e:"k₂ = 0,9 pour tête ordinaire, 0,63 pour fraisée." },
+      { q:"α_v pour classe 8.8 = ?", o:['0,5','0,6','0,7'], c:1, e:"α_v = 0,6 pour 4.6/5.6/8.8, 0,5 pour 10.9." },
+      { q:"Interaction F_v + F_t : facteur sur Ft,Rd ?", o:['1,0','1,25','1,4'], c:2, e:"F_t,Ed / (1,4·F_t,Rd) selon EQ-10." },
+      { q:"α_b est :", o:['La valeur max','La valeur min','Toujours 2,5'], c:1, e:"α_b = min(e₁/(3d₀), p₁/(3d₀)-1/4, f_ub/f_u, 1)." }
+    ]
+  }
+};
+
+let bossState = { active:false, key:'', hp:100, lives:3, qIdx:0, timer:null, current:null, timeLeft:20 };
+
+function startBoss(key){
+  if(state.bossesDefeated[key]){
+    showToast('⚔️ Boss déjà vaincu !','ok'); return;
+  }
+  bossState = { active:true, key:key, hp:100, lives:3, qIdx:0, timer:null, current:null, timeLeft:20 };
+  $('bossModal').hidden = false;
+  renderBossFrame();
+  nextBossQuestion();
+  playSound('boss');
+}
+function renderBossFrame(){
+  const b = BOSS_DATA[bossState.key];
+  $('boss-arena').innerHTML =
+    '<div class="boss-header">'+
+      '<div class="boss-portrait">'+b.portrait+'</div>'+
+      '<div class="boss-title">'+
+        '<h3>'+b.name+'</h3>'+
+        '<p>Question '+(bossState.qIdx+1)+' / '+b.questions.length+'</p>'+
+      '</div>'+
+      '<div class="boss-lives">'+[1,2,3].map(function(i){ return '<span class="life '+(i<=bossState.lives?'':'lost')+'">❤️</span>'; }).join('')+'</div>'+
+    '</div>'+
+    '<div class="boss-hp-bar"><div class="boss-hp-fill" style="width:'+bossState.hp+'%"></div><div class="boss-hp-text">'+bossState.hp+'% HP</div></div>'+
+    '<div class="boss-question" id="boss-q">'+(bossState.current?bossState.current.q:'…')+'</div>'+
+    '<div class="boss-timer"><div id="boss-timer-bar" style="width:100%"></div></div>'+
+    '<div class="boss-options" id="boss-options"></div>'+
+    '<div class="modal-actions" style="margin-top:1rem">'+
+      '<button class="secondary" onclick="closeBoss()">Fermer</button>'+
+    '</div>';
+}
+function nextBossQuestion(){
+  const b = BOSS_DATA[bossState.key];
+  if(bossState.qIdx >= b.questions.length){ endBoss(true); return; }
+  bossState.current = b.questions[bossState.qIdx];
+  bossState.timeLeft = 20;
+  renderBossFrame();
+  const opts = $('boss-options'); opts.innerHTML = '';
+  bossState.current.o.forEach(function(opt,i){
+    const btn = document.createElement('button');
+    btn.textContent = (i+1)+'. '+opt;
+    btn.onclick = function(){ answerBoss(i); };
+    opts.appendChild(btn);
+  });
+  const bar = $('boss-timer-bar');
+  clearInterval(bossState.timer);
+  bossState.timer = setInterval(function(){
+    bossState.timeLeft -= 0.1;
+    if(bar) bar.style.width = Math.max(0, (bossState.timeLeft/20)*100)+'%';
+    if(bossState.timeLeft<=0){ clearInterval(bossState.timer); answerBoss(-1); }
+  }, 100);
+}
+function answerBoss(i){
+  if(!bossState.active) return;
+  clearInterval(bossState.timer);
+  const correct = i===bossState.current.c;
+  const btns = document.querySelectorAll('#boss-options button');
+  btns.forEach(function(b){ b.disabled = true; });
+  if(i>=0 && btns[i]) btns[i].classList.add(correct?'correct':'wrong');
+  if(!correct && btns[bossState.current.c]) btns[bossState.current.c].classList.add('correct');
+  if(correct){
+    bossState.hp = Math.max(0, bossState.hp - 25);
+    playSound('correct');
+    showDamage('-25 HP','crit');
+    awardXP(30);
+  } else {
+    bossState.lives = Math.max(0, bossState.lives-1);
+    playSound('wrong');
+    showDamage('-1 vie','negative');
+  }
+  const fill = document.querySelector('.boss-hp-fill'); if(fill) fill.style.width = bossState.hp+'%';
+  const txt  = document.querySelector('.boss-hp-text'); if(txt)  txt.textContent = bossState.hp+'% HP';
+  document.querySelectorAll('.boss-lives .life').forEach(function(l,idx){
+    l.classList.toggle('lost', idx+1>bossState.lives);
+  });
+  bossState.qIdx++;
+  setTimeout(function(){
+    if(bossState.lives<=0) endBoss(false);
+    else if(bossState.hp<=0) endBoss(true);
+    else nextBossQuestion();
+  }, 900);
+}
+function endBoss(victory){
+  bossState.active = false;
+  clearInterval(bossState.timer);
+  const b = BOSS_DATA[bossState.key];
+  if(victory){
+    state.bossesDefeated[bossState.key] = true;
+    state.gems += b.reward;
+    state.hints += 1;
+    saveState(); renderHUD();
+    $('boss-arena').innerHTML = '<div class="boss-result victory">'+
+      '<h2>🏆 VICTOIRE !</h2>'+
+      '<div style="font-size:3rem">'+b.portrait+' 💀</div>'+
+      '<div class="reward">💎 +'+b.reward+' · 💡 +1</div>'+
+      '<button onclick="closeBoss()" style="margin-top:1rem">Continue</button>'+
+    '</div>';
+    confetti(100); playSound('victory');
+    const trg = $('boss-trigger-'+bossState.key);
+    if(trg){ trg.classList.add('defeated'); trg.innerHTML = '<h3>✅ '+b.name+' — Vaincu</h3><p>+ '+b.reward+' 💎</p>'; }
+    bumpQuest('boss');
+    checkQuests();
+    renderBadges();
+    renderJourney();
+    renderBlueprints();
+    renderDashboard();
+  } else {
+    $('boss-arena').innerHTML = '<div class="boss-result defeat">'+
+      '<h2>💀 DÉFAITE</h2>'+
+      '<div style="font-size:3rem">'+b.portrait+' 😈</div>'+
+      '<p style="margin:.7rem 0">Réessayez !</p>'+
+      '<button onclick="startBoss(\''+bossState.key+'\')" style="margin-bottom:.5rem;width:100%">Réessayer</button>'+
+      '<button class="secondary" onclick="closeBoss()" style="width:100%">Fermer</button>'+
+    '</div>';
+    playSound('defeat');
+  }
+}
+function closeBoss(){ $('bossModal').hidden = true; bossState.active=false; clearInterval(bossState.timer); }
+
+/* ============================================================
+   SPEED ROUND
+============================================================ */
+const SPEED_Q = [
+  { q:"β_w S355 ?", o:['0,80','0,85','0,90'], c:2 },
+  { q:"Critère soudure d'angle :", o:['σ≤Re','β_w·√(σ²+3(τ₁²+τ₂²))≤R_w/γ','τ≤Re'], c:1 },
+  { q:"Frontaux σ = ?", o:['N/(a·l_c)','N·√2/(2·a·l_c)','N/(2·a)'], c:1 },
+  { q:"Latéraux τ₁ = ?", o:['N/(a·l_c)','N·√2/(2·a·l_c)','2N/(a·l_c)'], c:0 },
+  { q:"V_pl âme = ?", o:['0,58·A_v·R_y/γ','A_v·R_y','1,5·A_v·R_y'], c:0 },
+  { q:"k₂ ordinaire :", o:['0,6','0,9','1,0'], c:1 },
+  { q:"α_v pour 8.8 :", o:['0,5','0,6','0,7'], c:1 },
+  { q:"F_t,Rd = ?", o:['k₂·f_ub·A_s/γ','f_ub·A_s','0,5·f_ub·A_s'], c:0 },
+  { q:"Interaction F_t :", o:['1,0','1,25','1,4'], c:2 },
+  { q:"HR F_p = ?", o:['0,7·A_s·f_ub','A_s·f_ub','0,5·A_s·f_ub'], c:0 },
+  { q:"b_wf laminé :", o:['t_fb+5(t_fc+r_c)','t_fb+r_c','2·t_fb'], c:0 },
+  { q:"γ_M2 boulons :", o:['1,00','1,10','1,25'], c:2 },
+  { q:"Bearing dépend de…", o:['pinces','R_w','E'], c:0 },
+  { q:"γ_M0 sections :", o:['1,00','1,10','1,25'], c:0 },
+  { q:"Résistance électrode typique :", o:['235','430','1000'], c:1 }
+];
+let speedState = { active:false, timeLeft:30, score:0, asked:[], current:null, timer:null };
+
+function openSpeedRound(){
+  speedState = { active:false, timeLeft:30, score:0, asked:[], current:null, timer:null };
+  $('speedModal').hidden = false;
+  $('speed-result').style.display = 'none';
+  $('speed-result').innerHTML = '';
+  $('speed-timer').textContent = '30';
+  $('speed-timer').classList.remove('danger');
+  $('speed-body').innerHTML = '<p style="text-align:center;padding:1.5rem 0">Prêt·e ?</p>'+
+    '<button class="play" style="display:block;margin:1rem auto;padding:.9rem 2rem;font-size:1.05rem" onclick="startSpeed()">▶ Démarrer</button>'+
+    '<div class="modal-actions"><button class="secondary" onclick="closeSpeed()" style="width:100%">Fermer</button></div>';
+}
+function startSpeed(){
+  $('speed-body').innerHTML = '<div id="speed-quiz"></div>';
+  speedState.active = true; speedState.timeLeft = 30; speedState.score = 0; speedState.asked = [];
+  speedState.timer = setInterval(function(){
+    speedState.timeLeft--;
+    $('speed-timer').textContent = speedState.timeLeft;
+    $('speed-timer').classList.toggle('danger', speedState.timeLeft<=10);
+    if(speedState.timeLeft<=0) endSpeed();
+  }, 1000);
+  nextSpeedQ();
+}
+function nextSpeedQ(){
+  if(!speedState.active) return;
+  const remaining = SPEED_Q.filter(function(_,i){ return speedState.asked.indexOf(i)===-1; });
+  if(!remaining.length){ endSpeed(); return; }
+  const idx = Math.floor(Math.random()*remaining.length);
+  const realIdx = SPEED_Q.indexOf(remaining[idx]);
+  speedState.asked.push(realIdx);
+  speedState.current = SPEED_Q[realIdx];
+  let html = '<div class="speed-q">'+speedState.current.q+'</div><div class="speed-options">';
+  speedState.current.o.forEach(function(o,i){ html += '<button onclick="answerSpeed('+i+')">'+o+'</button>'; });
+  html += '</div>';
+  $('speed-quiz').innerHTML = html;
+}
+function answerSpeed(i){
+  if(!speedState.active) return;
+  const correct = i===speedState.current.c;
+  const btns = document.querySelectorAll('#speed-quiz button');
+  btns.forEach(function(b){ b.disabled = true; });
+  if(btns[i]) btns[i].classList.add(correct?'correct':'wrong');
+  if(correct){
+    speedState.score++;
+    playSound('speed');
+    awardXP(20);
+    showDamage('+20 XP','positive');
+    if(speedState.score>=5) bumpQuest('speed');
+  } else {
+    if(btns[speedState.current.c]) btns[speedState.current.c].classList.add('correct');
+    playSound('wrong');
+  }
+  setTimeout(function(){ if(speedState.active) nextSpeedQ(); }, 400);
+}
+function endSpeed(){
+  if(speedState.timer) clearInterval(speedState.timer);
+  speedState.active = false;
+  const rec = state.speedBest||0;
+  const nRec = speedState.score>rec;
+  if(nRec){ state.speedBest = speedState.score; saveState(); }
+  if(speedState.score>=5) awardGems(5);
+  const rating = speedState.score>=8?'🏆 INCROYABLE !':speedState.score>=5?'⭐ Très bien !':speedState.score>=3?'👍 Pas mal':'💪 Réessayez';
+  $('speed-result').style.display = 'block';
+  $('speed-result').innerHTML = '<div style="text-align:center;padding:1rem">'+
+    '<h3 style="font-size:2rem;margin:0 0 .5rem;color:var(--accent)">'+speedState.score+' / '+speedState.asked.length+'</h3>'+
+    '<p style="font-size:1.05rem;font-weight:700">'+rating+'</p>'+
+    (nRec?'<p style="color:var(--gold);font-weight:700">🎯 Nouveau record !</p>':'<p style="color:var(--muted)">Record : '+state.speedBest+'</p>')+
+    '<button onclick="closeSpeed()" style="margin-top:1rem;width:100%">Fermer</button>'+
+    '<button class="secondary" onclick="openSpeedRound()" style="margin-top:.5rem;width:100%">Rejouer</button>'+
+  '</div>';
+  $('speed-body').innerHTML = '';
+  if(speedState.score>=8){ confetti(100); playSound('levelup'); }
+  else if(speedState.score>=5){ confetti(40); }
+}
+function closeSpeed(){ $('speedModal').hidden = true; if(speedState.timer) clearInterval(speedState.timer); }
+
+/* ============================================================
+   AVATAR
+============================================================ */
+function openAvatar(){
+  const tier = currentTier();
+  const next = AVATAR_TIERS.find(function(t){ return t.lvl>state.level; });
+  const needed = state.level*100;
+  const pct = Math.round(100*state.xp/needed);
+  const list = AVATAR_TIERS.map(function(t){
+    const done = state.level>=t.lvl;
+    return '<li class="'+(done?'done':'')+'">'+(done?'✓':'🔒')+' Niv. '+t.lvl+' — '+t.name+'</li>';
+  }).join('');
+  $('avatar-card-content').innerHTML =
+    '<h2>'+tier.name+' — Niveau '+state.level+'</h2>'+
+    '<div class="avatar-big">'+avatarSVG(140)+'</div>'+
+    '<div class="avatar-stage">'+(next?'Prochain : <b>'+next.name+'</b>':'🏆 Max')+'</div>'+
+    '<div class="avatar-progress"><div style="width:'+pct+'%"></div></div>'+
+    '<div style="font-size:.82rem;color:var(--muted);margin-bottom:.7rem;text-align:center">'+state.xp+' / '+needed+' XP</div>'+
+    '<ul class="avatar-milestones">'+list+'</ul>'+
+    '<div style="display:flex;gap:.5rem;margin-top:1rem"><button onclick="closeAvatar()" style="flex:1">Fermer</button></div>';
+  $('avatarModal').hidden = false;
+}
+function closeAvatar(){ $('avatarModal').hidden = true; }
+
+/* ============================================================
+   BEARING ILLUSTRATION (plan + coupe)
+============================================================ */
+function updateLegendValues(){
+  const e1=num('br_e1'), p1=num('br_p1'), e2=num('br_e2'), p2=num('br_p2');
+  const d=num('br_d'), d0=num('br_d0'), t=num('br_t');
+  let fb = '0';
+  const brRes = $('br_result');
+  if(brRes){
+    const m = brRes.textContent.match(/[\d.]+/);
+    if(m) fb = m[0];
+  }
+  if($('lv-e1')) $('lv-e1').textContent = e1+' mm';
+  if($('lv-p1')) $('lv-p1').textContent = p1+' mm';
+  if($('lv-e2')) $('lv-e2').textContent = e2+' mm';
+  if($('lv-p2')) $('lv-p2').textContent = p2+' mm';
+  if($('lv-Fb')) $('lv-Fb').textContent = fb+' kN';
+  if($('bi-e1')) $('bi-e1').textContent = e1;
+  if($('bi-p1')) $('bi-p1').textContent = p1;
+  if($('bi-e2')) $('bi-e2').textContent = e2;
+  if($('bi-p2')) $('bi-p2').textContent = p2;
+  if($('bi-d'))  $('bi-d').textContent  = d;
+  if($('bi-d0')) $('bi-d0').textContent = d0;
+  if($('bi-t'))  $('bi-t').textContent  = t;
+  if($('bi-Fb')) $('bi-Fb').textContent = fb;
+}
+function drawBearingPlan(){
+  const svg = $('bi-plan'); if(!svg) return;
+  const e1=num('br_e1'), p1=num('br_p1'), e2=num('br_e2'), p2=num('br_p2');
+  const d=num('br_d'), d0=num('br_d0');
+  const W = 2*e1+p1, H = 2*e2+p2;
+  const svgW=600, svgH=540, mL=100, mR=50, mT=100, mB=70;
+  const drawW = svgW-mL-mR, drawH = svgH-mT-mB;
+  const scale = Math.min(drawW/W, drawH/H, 3);
+  const pw = W*scale, ph = H*scale;
+  const px = mL+(drawW-pw)/2, py = mT+(drawH-ph)/2;
+  const holeR = (d0/2)*scale, boltR = (d/2)*scale;
+  const holes = [
+    {x:px+e1*scale,        y:py+e2*scale},
+    {x:px+(e1+p1)*scale,   y:py+e2*scale},
+    {x:px+e1*scale,        y:py+(e2+p2)*scale},
+    {x:px+(e1+p1)*scale,   y:py+(e2+p2)*scale}
+  ];
+  let h = '<defs>'+
+    '<marker id="arrowV" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto"><polygon points="0,0 14,7 0,14" fill="#ef4444"/></marker>'+
+    '<marker id="dimS" markerWidth="8" markerHeight="8" refX="0" refY="4" orient="auto"><polygon points="8,0 0,4 8,8" fill="#374151"/></marker>'+
+    '<marker id="dimE" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="#374151"/></marker>'+
+  '</defs>';
+  h += '<text x="'+(px+pw/2)+'" y="'+(py-75)+'" text-anchor="middle" font-size="13" font-weight="800" fill="#dc2626">↓ Sens de l\'effort V ↓</text>';
+  h += '<line x1="'+(px-60)+'" y1="'+(py+ph/2)+'" x2="'+(px-10)+'" y2="'+(py+ph/2)+'" stroke="#dc2626" stroke-width="4" marker-end="url(#arrowV)"/>';
+  h += '<text x="'+(px-65)+'" y="'+(py+ph/2+6)+'" text-anchor="end" font-size="20" font-weight="900" fill="#dc2626">V</text>';
+  h += '<rect x="'+px+'" y="'+py+'" width="'+pw+'" height="'+ph+'" fill="rgba(59,130,246,.12)" stroke="#3b82f6" stroke-width="2.5" rx="3"/>';
+  holes.forEach(function(ho){
+    h += '<circle cx="'+ho.x+'" cy="'+ho.y+'" r="'+holeR+'" fill="#fff" stroke="#1f2937" stroke-width="2"/>';
+    h += '<circle cx="'+ho.x+'" cy="'+ho.y+'" r="'+boltR+'" fill="rgba(148,163,184,.35)" stroke="#475569" stroke-width="1.5" stroke-dasharray="3 2"/>';
+    const path = 'M '+ho.x+' '+(ho.y-holeR)+' A '+holeR+' '+holeR+' 0 0 1 '+ho.x+' '+(ho.y+holeR)+' L '+ho.x+' '+(ho.y+boltR)+' A '+boltR+' '+boltR+' 0 0 0 '+ho.x+' '+(ho.y-boltR)+' Z';
+    h += '<path d="'+path+'" fill="rgba(220,38,38,.55)" stroke="#dc2626" stroke-width="1.5"/>';
+  });
+  const dy1 = py-28;
+  h += '<line x1="'+px+'" y1="'+dy1+'" x2="'+(px+e1*scale)+'" y2="'+dy1+'" stroke="#f59e0b" stroke-width="3" marker-start="url(#dimS)" marker-end="url(#dimE)"/>';
+  h += '<circle cx="'+(px+e1*scale/2)+'" cy="'+(dy1-22)+'" r="15" fill="#f59e0b" stroke="#fff" stroke-width="2.5"/>';
+  h += '<text x="'+(px+e1*scale/2)+'" y="'+(dy1-17)+'" text-anchor="middle" font-size="15" font-weight="900" fill="#fff">1</text>';
+  h += '<text x="'+(px+e1*scale/2)+'" y="'+(dy1+20)+'" text-anchor="middle" font-size="13" font-weight="800" fill="#f59e0b">e₁='+e1+'</text>';
+  const dy2 = py-62, x1 = px+e1*scale, x2 = px+(e1+p1)*scale;
+  h += '<line x1="'+x1+'" y1="'+dy2+'" x2="'+x2+'" y2="'+dy2+'" stroke="#8b5cf6" stroke-width="3" marker-start="url(#dimS)" marker-end="url(#dimE)"/>';
+  h += '<circle cx="'+((x1+x2)/2)+'" cy="'+(dy2-22)+'" r="15" fill="#8b5cf6" stroke="#fff" stroke-width="2.5"/>';
+  h += '<text x="'+((x1+x2)/2)+'" y="'+(dy2-17)+'" text-anchor="middle" font-size="15" font-weight="900" fill="#fff">2</text>';
+  h += '<text x="'+((x1+x2)/2)+'" y="'+(dy2+20)+'" text-anchor="middle" font-size="13" font-weight="800" fill="#8b5cf6">p₁='+p1+'</text>';
+  const dx1 = px-30;
+  h += '<line x1="'+dx1+'" y1="'+py+'" x2="'+dx1+'" y2="'+(py+e2*scale)+'" stroke="#10b981" stroke-width="3" marker-start="url(#dimS)" marker-end="url(#dimE)"/>';
+  h += '<circle cx="'+(dx1-22)+'" cy="'+(py+e2*scale/2)+'" r="15" fill="#10b981" stroke="#fff" stroke-width="2.5"/>';
+  h += '<text x="'+(dx1-22)+'" y="'+(py+e2*scale/2+5)+'" text-anchor="middle" font-size="15" font-weight="900" fill="#fff">3</text>';
+  h += '<text x="'+(dx1-8)+'" y="'+(py+e2*scale/2+34)+'" text-anchor="middle" font-size="13" font-weight="800" fill="#10b981">e₂='+e2+'</text>';
+  const dx2 = px-70, y1 = py+e2*scale, y2 = py+(e2+p2)*scale;
+  h += '<line x1="'+dx2+'" y1="'+y1+'" x2="'+dx2+'" y2="'+y2+'" stroke="#0ea5e9" stroke-width="3" marker-start="url(#dimS)" marker-end="url(#dimE)"/>';
+  h += '<circle cx="'+(dx2-22)+'" cy="'+((y1+y2)/2)+'" r="15" fill="#0ea5e9" stroke="#fff" stroke-width="2.5"/>';
+  h += '<text x="'+(dx2-22)+'" y="'+((y1+y2)/2+5)+'" text-anchor="middle" font-size="15" font-weight="900" fill="#fff">4</text>';
+  h += '<text x="'+(dx2-8)+'" y="'+((y1+y2)/2+34)+'" text-anchor="middle" font-size="13" font-weight="800" fill="#0ea5e9">p₂='+p2+'</text>';
+  const cx = px+pw+40, cy = py+40;
+  h += '<line x1="'+cx+'" y1="'+cy+'" x2="'+(holes[1].x+holeR+2)+'" y2="'+(holes[1].y-holeR/2)+'" stroke="#dc2626" stroke-width="2" stroke-dasharray="4 2"/>';
+  h += '<circle cx="'+cx+'" cy="'+cy+'" r="15" fill="#dc2626" stroke="#fff" stroke-width="2.5"/>';
+  h += '<text x="'+cx+'" y="'+(cy+5)+'" text-anchor="middle" font-size="15" font-weight="900" fill="#fff">5</text>';
+  svg.innerHTML = h;
+}
+function drawBearingSection(){
+  const svg = $('bi-section'); if(!svg) return;
+  const d=num('br_d'), d0=num('br_d0'), t=num('br_t');
+  let Fb = 74;
+  const brRes = $('br_result');
+  if(brRes){
+    const m = brRes.textContent.match(/[\d.]+/);
+    if(m) Fb = parseFloat(m[0]);
+  }
+  const st=15, sd=12, pW=400, pH=t*st;
+  const pX=(600-pW)/2, pY=(420-pH)/2-30;
+  const holeR=(d0/2)*sd, boltR=(d/2)*sd;
+  const hCx=pX+pW/2, hCy=pY+pH/2;
+  let h = '<defs>'+
+    '<marker id="arrowV2" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><polygon points="0,0 12,6 0,12" fill="#ef4444"/></marker>'+
+    '<marker id="dimS2" markerWidth="8" markerHeight="8" refX="0" refY="4" orient="auto"><polygon points="8,0 0,4 8,8" fill="#374151"/></marker>'+
+    '<marker id="dimE2" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="#374151"/></marker>'+
+    '<linearGradient id="bg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="rgba(220,38,38,.1)"/><stop offset="100%" stop-color="rgba(220,38,38,.7)"/></linearGradient>'+
+  '</defs>';
+  h += '<rect x="'+pX+'" y="'+pY+'" width="'+pW+'" height="'+pH+'" fill="rgba(59,130,246,.15)" stroke="#3b82f6" stroke-width="2.5"/>';
+  h += '<circle cx="'+hCx+'" cy="'+hCy+'" r="'+holeR+'" fill="#fff" stroke="#1f2937" stroke-width="2"/>';
+  h += '<circle cx="'+hCx+'" cy="'+hCy+'" r="'+boltR+'" fill="rgba(148,163,184,.5)" stroke="#475569" stroke-width="2"/>';
+  h += '<line x1="'+(hCx-140)+'" y1="'+hCy+'" x2="'+(hCx-boltR-8)+'" y2="'+hCy+'" stroke="#ef4444" stroke-width="3" marker-end="url(#arrowV2)"/>';
+  h += '<text x="'+(hCx-145)+'" y="'+(hCy-10)+'" text-anchor="end" font-size="20" font-weight="900" fill="#ef4444">V</text>';
+  const pL=hCx+boltR-2, pR=hCx+holeR+10;
+  const pT=hCy-holeR*0.95, pB=hCy+holeR*0.95;
+  h += '<path d="M '+pL+' '+pT+' L '+pR+' '+hCy+' L '+pL+' '+pB+' Z" fill="url(#bg)" stroke="#dc2626" stroke-width="2"/>';
+  for(let i=0;i<5;i++){
+    const yP=pT+(i/4)*(pB-pT);
+    const op=0.3+(1-Math.abs(i-2)/2)*0.7;
+    h += '<line x1="'+(pL+8)+'" y1="'+yP+'" x2="'+(pR-8)+'" y2="'+yP+'" stroke="#dc2626" stroke-width="2" marker-end="url(#arrowV2)" opacity="'+op+'"/>';
+  }
+  const dimTX = pX-25;
+  h += '<line x1="'+dimTX+'" y1="'+pY+'" x2="'+dimTX+'" y2="'+(pY+pH)+'" stroke="#f59e0b" stroke-width="2.5" marker-start="url(#dimS2)" marker-end="url(#dimE2)"/>';
+  h += '<text x="'+(dimTX-8)+'" y="'+(pY+pH/2+5)+'" text-anchor="end" font-size="13" font-weight="800" fill="#f59e0b">t='+t+'mm</text>';
+  const dimDX = hCx+holeR+40;
+  h += '<line x1="'+dimDX+'" y1="'+(hCy-boltR)+'" x2="'+dimDX+'" y2="'+(hCy+boltR)+'" stroke="#1e3a8a" stroke-width="2" marker-start="url(#dimS2)" marker-end="url(#dimE2)"/>';
+  h += '<text x="'+(dimDX+15)+'" y="'+(hCy+5)+'" font-size="13" font-weight="800" fill="#1e3a8a">d='+d+'mm</text>';
+  const dimD0Y = pY+pH+28;
+  h += '<line x1="'+(hCx-holeR)+'" y1="'+dimD0Y+'" x2="'+(hCx+holeR)+'" y2="'+dimD0Y+'" stroke="#8b5cf6" stroke-width="2" marker-start="url(#dimS2)" marker-end="url(#dimE2)"/>';
+  h += '<text x="'+hCx+'" y="'+(dimD0Y+24)+'" text-anchor="middle" font-size="13" font-weight="800" fill="#8b5cf6">d₀='+d0+'mm</text>';
+  h += '<text x="'+(pR+15)+'" y="'+(hCy-holeR-10)+'" font-size="12" font-weight="800" fill="#dc2626">Fb,Rd = '+Fb.toFixed(1)+' kN</text>';
+  h += '<text x="'+(pX+pW/2)+'" y="'+(pY+pH+80)+'" text-anchor="middle" font-size="12" fill="#6b7280" font-style="italic">Distribution triangulaire — maximale au plan médian</text>';
+  svg.innerHTML = h;
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+function initAll(){
+  try { applyTheme(); } catch(e){ console.error(e); }
+  try { renderHUD(); } catch(e){ console.error(e); }
+  try { updateParcours(); } catch(e){ console.error(e); }
+  try { renderMasteryTable(); } catch(e){ console.error(e); }
+  try { renderDashboard(); } catch(e){ console.error(e); }
+  try { renderBlueprints(); } catch(e){ console.error(e); }
+  try { renderJourney(); } catch(e){ console.error(e); }
+  try { renderBadges(); } catch(e){ console.error(e); }
+  try { renderQuests(); } catch(e){ console.error(e); }
+  try { initQuizzes(); } catch(e){ console.error(e); }
+  try { calcBearing(); } catch(e){ console.error(e); }
+  try { calcBeta();   } catch(e){ console.error(e); }
+
+  // Restaurer les boss déjà vaincus
+  Object.keys(state.bossesDefeated).forEach(function(k){
+    const trg = $('boss-trigger-'+k);
+    if(trg){
+      const name = (BOSS_DATA[k] && BOSS_DATA[k].name) || k;
+      trg.classList.add('defeated');
+      trg.innerHTML = '<h3>✅ '+name+' — Vaincu</h3>';
+    }
+  });
+
+  // MathJax
+  if(window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise().catch(function(){});
+
+  // Streak journalier
+  const today = new Date().toDateString();
+  if(state.lastVisit !== today){
+    const y = new Date(Date.now()-86400000).toDateString();
+    state.streak = state.lastVisit===y ? state.streak+1 : 1;
+    state.lastVisit = today;
+    saveState(); renderHUD();
+  }
+}
+
+// Raccourcis clavier
+document.addEventListener('keydown', function(e){
+  if(['INPUT','TEXTAREA','SELECT'].indexOf(e.target.tagName)!==-1) return;
+  if(e.key==='d'||e.key==='D'){ e.preventDefault(); toggleTheme(); }
+  else if(e.key==='?'){ e.preventDefault(); openHelp(); }
+  else if(e.key==='h'||e.key==='H'){ e.preventDefault(); if($('dashboard')) $('dashboard').scrollIntoView({behavior:'smooth'}); }
+  else if(e.key==='s'||e.key==='S'){ e.preventDefault(); openSpeedRound(); }
+  else if(e.key==='b'||e.key==='B'){
+    e.preventDefault();
+    const u = ['weld','column','bolt'].find(function(k){ return !state.bossesDefeated[k]; });
+    if(u) startBoss(u); else showToast('Tous les boss sont vaincus !','ok');
+  }
+  else if(e.key==='Escape'){ closeBoss(); closeSpeed(); closeAvatar(); closeHelp(); }
+});
+
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', initAll);
+} else {
+  initAll();
+}
+</script>
+</body>
+</html>
